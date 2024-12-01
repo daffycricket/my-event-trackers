@@ -1,0 +1,41 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+# Build outputs
+build/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/Runner.xcworkspace/
+android/.gradle/
+android/app/build/
+android/app/intermediates/
+android/app/outputs/
+android/app/src/main/res/drawable-*
+android/app/src/main/res/mipmap-*
+android/app/src/main/res/values-*
+android/local.properties
+
+# IDE related
+.idea/
+*.iml
+*.ipr
+*.iws
+*.hprof
+*.log
+*.jks
+*.keystore
+
+# Miscellaneous
+*.DS_Store
+*.apk
+*.ap_
+*.hprof
+*.log
+*.tmp
+*.swp
