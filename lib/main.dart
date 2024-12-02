@@ -5,6 +5,8 @@ import 'package:my_event_tracker/models/event.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import 'package:my_event_tracker/screens/create_workout_screen.dart';
 import 'providers/events_provider.dart';
+import 'screens/meal_detail_screen.dart';
+import 'screens/workout_detail_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -101,6 +103,14 @@ class EventList extends ConsumerWidget {
             trailing: event is MealEvent
                 ? Text(event.type.name)
                 : Text('${(event as WorkoutEvent).duration.inMinutes}min'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => event is MealEvent
+                    ? MealDetailScreen(meal: event)
+                    : WorkoutDetailScreen(workout: event as WorkoutEvent),
+              ),
+            ),
           ),
         );
       },
