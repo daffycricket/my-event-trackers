@@ -1,27 +1,25 @@
 abstract class Event {
   final String id;
-  final String title;
   final DateTime date;
+  final String? notes;
 
-  const Event({
+  Event({
     required this.id,
-    required this.title,
     required this.date,
+    this.notes,
   });
 }
 
 class MealEvent extends Event {
   final List<String> foods;
-  final String? notes;
   final MealType type;
 
-  const MealEvent({
+  MealEvent({
     required super.id,
-    required super.title,
     required super.date,
     required this.foods,
-    this.notes,
     required this.type,
+    super.notes,
   });
 }
 
@@ -29,16 +27,14 @@ class WorkoutEvent extends Event {
   final Duration duration;
   final WorkoutType type;
   final int? caloriesBurned;
-  final String? notes;
 
-  const WorkoutEvent({
+  WorkoutEvent({
     required super.id,
-    required super.title,
     required super.date,
     required this.duration,
     required this.type,
     this.caloriesBurned,
-    this.notes,
+    super.notes,
   });
 }
 
@@ -54,4 +50,4 @@ enum WorkoutType {
   strength,
   flexibility,
   sport
-} 
+}

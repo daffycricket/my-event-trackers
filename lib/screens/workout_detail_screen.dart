@@ -23,7 +23,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(updatedWorkout.title),
+        title: Text(updatedWorkout.type.name),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -38,7 +38,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      updatedWorkout.title,
+                      updatedWorkout.type.name,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),

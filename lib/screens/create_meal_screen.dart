@@ -17,20 +17,43 @@ class CreateMealScreen extends ConsumerStatefulWidget {
 
 class _CreateMealScreenState extends ConsumerState<CreateMealScreen> 
     with DateTimePickerMixin {
-  late final TextEditingController _titleController;
-  late final TextEditingController _foodsController;
-  late final TextEditingController _notesController;
+  var _foodsController = TextEditingController();
+  var _notesController = TextEditingController();
   late MealType _selectedType;
 
   @override
   void initState() {
     super.initState();
     final meal = widget.mealToEdit;
-    _titleController = TextEditingController(text: meal?.title ?? '');
     _foodsController = TextEditingController(text: meal?.foods.join(', ') ?? '');
     _notesController = TextEditingController(text: meal?.notes ?? '');
     _selectedType = meal?.type ?? MealType.lunch;
     selectedDateTime = meal?.date ?? DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _foodsController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  void _saveMeal() {
+    final meal = MealEvent(
+      id: widget.mealToEdit?.id ?? const Uuid().v4(),
+      date: selectedDateTime,
+      type: _selectedType,
+      foods: _foodsController.text.split(',').map((e) => e.trim()).toList(),
+      notes: _notesController.text.isEmpty ? null : _notesController.text,
+    );
+    
+    final notifier = ref.read(eventsProvider.notifier);
+    if (widget.mealToEdit != null) {
+      notifier.updateEvent(meal);
+    } else {
+      notifier.addEvent(meal);
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -46,7 +69,6 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
         child: Column(
           children: [
             CommonEventFields(
-              titleController: _titleController,
               selectedDateTime: selectedDateTime,
               onDateSelect: selectDateTime,
               notesController: _notesController,
@@ -76,32 +98,5 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
         ),
       ),
     );
-  }
-
-  void _saveMeal() {
-    final meal = MealEvent(
-      id: widget.mealToEdit?.id ?? const Uuid().v4(),
-      title: _titleController.text,
-      date: selectedDateTime,
-      type: _selectedType,
-      foods: _foodsController.text.split(',').map((e) => e.trim()).toList(),
-      notes: _notesController.text.isEmpty ? null : _notesController.text,
-    );
-    
-    final notifier = ref.read(eventsProvider.notifier);
-    if (widget.mealToEdit != null) {
-      notifier.updateEvent(meal);
-    } else {
-      notifier.addEvent(meal);
-    }
-    Navigator.pop(context);
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _foodsController.dispose();
-    _notesController.dispose();
-    super.dispose();
   }
 } 

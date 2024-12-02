@@ -27,7 +27,6 @@ class EventsNotifier extends StateNotifier<List<Event>> {
 final _initialEvents = [
   MealEvent(
     id: const Uuid().v4(),
-    title: 'Petit déjeuner',
     date: DateTime.now().subtract(const Duration(hours: 3)),
     type: MealType.breakfast,
     foods: ['Café', 'Pain', 'Œufs'],
@@ -35,7 +34,7 @@ final _initialEvents = [
   ),
   WorkoutEvent(
     id: const Uuid().v4(),
-    title: 'Jogging matinal',
+    notes: 'Jogging matinal sur les quais',
     date: DateTime.now().subtract(const Duration(hours: 2)),
     type: WorkoutType.cardio,
     duration: const Duration(minutes: 30),
@@ -43,7 +42,7 @@ final _initialEvents = [
   ),
   MealEvent(
     id: const Uuid().v4(),
-    title: 'Déjeuner',
+    notes: 'Déjeuner sucré',
     date: DateTime.now().subtract(const Duration(minutes: 45)),
     type: MealType.lunch,
     foods: ['Salade', 'Poulet', 'Riz'],

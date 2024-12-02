@@ -111,13 +111,17 @@ class EventList extends ConsumerWidget {
                 event is MealEvent ? Icons.restaurant : Icons.fitness_center,
                 color: Theme.of(context).primaryColor,
               ),
-              title: Text(event.title),
-              subtitle: Text(
+              title: Text(
+                event is MealEvent 
+                  ? _getMealTypeText(event.type)
+                  : '${_getWorkoutTypeText((event as WorkoutEvent).type)} - ${(event).duration.inMinutes}min'
+              ),
+              subtitle: event.notes != null 
+                ? Text(event.notes!)
+                : null,
+              trailing: Text(
                 DateFormat('HH:mm').format(event.date),
               ),
-              trailing: event is MealEvent
-                  ? Text(event.type.name)
-                  : Text('${(event as WorkoutEvent).duration.inMinutes}min'),
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -182,5 +186,31 @@ class EventList extends ConsumerWidget {
     }
     
     return DateFormat('EEEE dd MMMM', 'fr_FR').format(date);
+  }
+
+  String _getMealTypeText(MealType type) {
+    switch (type) {
+      case MealType.breakfast:
+        return 'Petit déjeuner';
+      case MealType.lunch:
+        return 'Déjeuner';
+      case MealType.dinner:
+        return 'Dîner';
+      case MealType.snack:
+        return 'Collation';
+    }
+  }
+
+  String _getWorkoutTypeText(WorkoutType type) {
+    switch (type) {
+      case WorkoutType.cardio:
+        return 'Cardio';
+      case WorkoutType.strength:
+        return 'Musculation';
+      case WorkoutType.flexibility:
+        return 'Étirements';
+      case WorkoutType.sport:
+        return 'Sport';
+    }
   }
 }

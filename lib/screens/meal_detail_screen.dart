@@ -37,7 +37,7 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      updatedMeal.title,
+                      updatedMeal.type.name,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
