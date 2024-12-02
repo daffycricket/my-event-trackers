@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:my_event_tracker/providers/events_provider.dart';
+import 'package:my_event_tracker/screens/create_workout_screen.dart';
 import '../models/event.dart';
 
-class WorkoutDetailScreen extends StatelessWidget {
+class WorkoutDetailScreen extends ConsumerStatefulWidget {
   final WorkoutEvent workout;
 
   const WorkoutDetailScreen({super.key, required this.workout});
 
   @override
+  ConsumerState<WorkoutDetailScreen> createState() => _WorkoutDetailScreenState();
+}
+
+class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
+  @override
   Widget build(BuildContext context) {
+    // Récupérer la version à jour depuis le provider
+    final updatedWorkout = ref.watch(eventsProvider)
+        .firstWhere((e) => e.id == widget.workout.id) as WorkoutEvent;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Détail de l\'entraînement'),
+        title: Text(updatedWorkout.title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -26,7 +38,7 @@ class WorkoutDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      workout.title,
+                      updatedWorkout.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
@@ -35,13 +47,13 @@ class WorkoutDetailScreen extends StatelessWidget {
                         const Icon(Icons.access_time),
                         const SizedBox(width: 8),
                         Text(
-                          DateFormat('dd/MM/yyyy HH:mm').format(workout.date),
+                          DateFormat('dd/MM/yyyy HH:mm').format(updatedWorkout.date),
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Chip(label: Text(workout.type.name)),
+                    Chip(label: Text(updatedWorkout.type.name)),
                   ],
                 ),
               ),
@@ -56,16 +68,16 @@ class WorkoutDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Durée'),
-                        Text('${workout.duration.inMinutes} minutes'),
+                        Text('${updatedWorkout.duration.inMinutes} minutes'),
                       ],
                     ),
-                    if (workout.caloriesBurned != null) ...[
+                    if (updatedWorkout.caloriesBurned != null) ...[
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Calories brûlées'),
-                          Text('${workout.caloriesBurned} kcal'),
+                          Text('${updatedWorkout.caloriesBurned} kcal'),
                         ],
                       ),
                     ],
@@ -73,7 +85,7 @@ class WorkoutDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            if (workout.notes != null) ...[
+            if (updatedWorkout.notes != null) ...[
               const SizedBox(height: 16),
               Text(
                 'Notes',
@@ -83,12 +95,24 @@ class WorkoutDetailScreen extends StatelessWidget {
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(workout.notes!),
+                  child: Text(updatedWorkout.notes!),
                 ),
               ),
             ],
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateWorkoutScreen(workoutToEdit: updatedWorkout),
+            ),
+          ).then((_) => setState(() {})); // Force refresh après modification
+        },
+        icon: const Icon(Icons.edit),
+        label: const Text('Modifier'),
       ),
     );
   }

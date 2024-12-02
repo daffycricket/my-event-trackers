@@ -16,6 +16,12 @@ class EventsNotifier extends StateNotifier<List<Event>> {
   Event getEventById(String id) {
     return state.firstWhere((event) => event.id == id);
   }
+
+    void updateEvent(Event updatedEvent) {
+    state = state.map((event) => 
+      event.id == updatedEvent.id ? updatedEvent : event
+    ).toList();
+  }
 } 
 
 final _initialEvents = [

@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import '../models/event.dart';
+import '../providers/events_provider.dart';
 
-class MealDetailScreen extends StatelessWidget {
+class MealDetailScreen extends ConsumerStatefulWidget {
   final MealEvent meal;
 
   const MealDetailScreen({super.key, required this.meal});
 
   @override
+  ConsumerState<MealDetailScreen> createState() => _MealDetailScreenState();
+}
+
+class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
+  @override
   Widget build(BuildContext context) {
+    final updatedMeal = ref.watch(eventsProvider)
+        .firstWhere((e) => e.id == widget.meal.id) as MealEvent;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Détail du repas'),
@@ -26,7 +37,7 @@ class MealDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      meal.title,
+                      updatedMeal.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
@@ -35,13 +46,13 @@ class MealDetailScreen extends StatelessWidget {
                         const Icon(Icons.access_time),
                         const SizedBox(width: 8),
                         Text(
-                          DateFormat('dd/MM/yyyy HH:mm').format(meal.date),
+                          DateFormat('dd/MM/yyyy HH:mm').format(updatedMeal.date),
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Chip(label: Text(meal.type.name)),
+                    Chip(label: Text(updatedMeal.type.name)),
                   ],
                 ),
               ),
@@ -56,15 +67,15 @@ class MealDetailScreen extends StatelessWidget {
               child: ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: meal.foods.length,
+                itemCount: updatedMeal.foods.length,
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) => ListTile(
                   leading: const Icon(Icons.food_bank),
-                  title: Text(meal.foods[index]),
+                  title: Text(updatedMeal.foods[index]),
                 ),
               ),
             ),
-            if (meal.notes != null) ...[
+            if (updatedMeal.notes != null) ...[
               const SizedBox(height: 16),
               Text(
                 'Notes',
@@ -74,12 +85,24 @@ class MealDetailScreen extends StatelessWidget {
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(meal.notes!),
+                  child: Text(updatedMeal.notes!),
                 ),
               ),
             ],
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateMealScreen(mealToEdit: updatedMeal),
+            ),
+          );
+        },
+        icon: const Icon(Icons.edit),
+        label: const Text('Modifier'),
       ),
     );
   }

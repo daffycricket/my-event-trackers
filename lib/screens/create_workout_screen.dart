@@ -1,125 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_event_tracker/providers/events_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
-import 'package:intl/intl.dart';
+import '../providers/events_provider.dart';
+import '../mixins/date_time_picker_mixin.dart';
+import '../widgets/common_event_fields.dart';
 
 class CreateWorkoutScreen extends ConsumerStatefulWidget {
-  const CreateWorkoutScreen({super.key});
+  final WorkoutEvent? workoutToEdit;
+
+  const CreateWorkoutScreen({super.key, this.workoutToEdit});
 
   @override
   ConsumerState<CreateWorkoutScreen> createState() => _CreateWorkoutScreenState();
 }
 
-class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen> {
-  final _titleController = TextEditingController();
-  final _durationController = TextEditingController();
-  final _caloriesController = TextEditingController();
-  final _notesController = TextEditingController();
-  WorkoutType _selectedType = WorkoutType.cardio;
-  DateTime _selectedDateTime = DateTime.now();
-
-  Future<void> _selectDateTime() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: _selectedDateTime,
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2025),
-    );
-    
-    if (date != null) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
-      );
-      
-      if (time != null) {
-        setState(() {
-          _selectedDateTime = DateTime(
-            date.year,
-            date.month,
-            date.day,
-            time.hour,
-            time.minute,
-          );
-        });
-      }
-    }
-  }
+class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
+    with DateTimePickerMixin {
+  late final TextEditingController _titleController;
+  late final TextEditingController _durationController;
+  late final TextEditingController _caloriesController;
+  late final TextEditingController _notesController;
+  late WorkoutType _selectedType;
 
   @override
-  void dispose() {
-    _titleController.dispose();
-    _durationController.dispose();
-    _caloriesController.dispose();
-    _notesController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    final workout = widget.workoutToEdit;
+    _titleController = TextEditingController(text: workout?.title ?? '');
+    _durationController = TextEditingController(
+        text: workout?.duration.inMinutes.toString() ?? '');
+    _caloriesController = TextEditingController(
+        text: workout?.caloriesBurned?.toString() ?? '');
+    _notesController = TextEditingController(text: workout?.notes ?? '');
+    _selectedType = workout?.type ?? WorkoutType.cardio;
+    selectedDateTime = workout?.date ?? DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.workoutToEdit != null;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nouvel Entraînement'),
+        title: Text(isEditing ? 'Modifier l\'entraînement' : 'Nouvel Entraînement'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Titre'),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: Text(
-                DateFormat('dd/MM/yyyy HH:mm').format(_selectedDateTime),
-              ),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: _selectDateTime,
+            CommonEventFields(
+              titleController: _titleController,
+              selectedDateTime: selectedDateTime,
+              onDateSelect: selectDateTime,
+              notesController: _notesController,
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<WorkoutType>(
               value: _selectedType,
-              decoration: const InputDecoration(labelText: "Type d'exercice"),
-              items: WorkoutType.values.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(type.name),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) setState(() => _selectedType = value);
-              },
+              onChanged: (value) => setState(() => _selectedType = value!),
+              items: WorkoutType.values.map((type) => DropdownMenuItem(
+                value: type,
+                child: Text(type.name),
+              )).toList(),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _durationController,
-              decoration: const InputDecoration(
-                labelText: 'Durée (minutes)',
-              ),
+              decoration: const InputDecoration(labelText: 'Durée (minutes)'),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _caloriesController,
-              decoration: const InputDecoration(
-                labelText: 'Calories brûlées (optionnel)',
-              ),
+              decoration: const InputDecoration(labelText: 'Calories brûlées'),
               keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _notesController,
-              decoration: const InputDecoration(labelText: 'Notes'),
-              maxLines: 3,
             ),
             const Spacer(),
             ElevatedButton(
               onPressed: _saveWorkout,
-              child: const Text('Enregistrer'),
+              child: Text(isEditing ? 'Mettre à jour' : 'Sauvegarder'),
             ),
           ],
         ),
@@ -129,18 +89,32 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen> {
 
   void _saveWorkout() {
     final workout = WorkoutEvent(
-      id: const Uuid().v4(),
+      id: widget.workoutToEdit?.id ?? const Uuid().v4(),
       title: _titleController.text,
-      date: _selectedDateTime,
+      date: selectedDateTime,
       type: _selectedType,
       duration: Duration(minutes: int.parse(_durationController.text)),
-      caloriesBurned: _caloriesController.text.isEmpty 
-          ? null 
+      caloriesBurned: _caloriesController.text.isEmpty
+          ? null
           : int.parse(_caloriesController.text),
       notes: _notesController.text.isEmpty ? null : _notesController.text,
     );
-    
-    ref.read(eventsProvider.notifier).addEvent(workout);
+
+    final notifier = ref.read(eventsProvider.notifier);
+    if (widget.workoutToEdit != null) {
+      notifier.updateEvent(workout);
+    } else {
+      notifier.addEvent(workout);
+    }
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _durationController.dispose();
+    _caloriesController.dispose();
+    _notesController.dispose();
+    super.dispose();
   }
 } 
