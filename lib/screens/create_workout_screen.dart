@@ -69,12 +69,16 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
               controller: _durationController,
               decoration: const InputDecoration(labelText: 'Durée (minutes)'),
               keyboardType: TextInputType.number,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _caloriesController,
               decoration: const InputDecoration(labelText: 'Calories brûlées'),
               keyboardType: TextInputType.number,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.next,
             ),
             const Spacer(),
             ElevatedButton(

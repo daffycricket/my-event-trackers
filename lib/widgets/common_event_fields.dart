@@ -22,6 +22,12 @@ class CommonEventFields extends StatelessWidget {
         TextField(
           controller: titleController,
           decoration: const InputDecoration(labelText: 'Titre'),
+          textCapitalization: TextCapitalization.sentences,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.text,
+          enableSuggestions: true,
+          autocorrect: true,
+          style: const TextStyle(locale: Locale('fr', 'FR')),
         ),
         const SizedBox(height: 16),
         ListTile(
@@ -36,7 +42,13 @@ class CommonEventFields extends StatelessWidget {
           TextField(
             controller: notesController!,
             decoration: const InputDecoration(labelText: 'Notes'),
+            textCapitalization: TextCapitalization.sentences,
+            textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.multiline,
             maxLines: 3,
+            enableSuggestions: true,
+            autocorrect: true,
+            style: const TextStyle(locale: Locale('fr', 'FR')),
           ),
         ],
       ],
