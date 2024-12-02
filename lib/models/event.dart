@@ -1,3 +1,5 @@
+import 'package:my_event_tracker/models/food_item.dart';
+
 abstract class Event {
   final String id;
   final DateTime date;
@@ -11,7 +13,7 @@ abstract class Event {
 }
 
 class MealEvent extends Event {
-  final List<String> foods;
+  final List<FoodItem> foods;
   final MealType type;
 
   MealEvent({

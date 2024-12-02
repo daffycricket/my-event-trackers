@@ -71,7 +71,8 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) => ListTile(
                   leading: const Icon(Icons.food_bank),
-                  title: Text(updatedMeal.foods[index]),
+                  title: Text(updatedMeal.foods[index].name),
+                  trailing: Text(updatedMeal.foods[index].quantity.toString()),
                 ),
               ),
             ),

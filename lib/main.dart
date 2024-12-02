@@ -113,12 +113,14 @@ class EventList extends ConsumerWidget {
               ),
               title: Text(
                 event is MealEvent 
-                  ? _getMealTypeText(event.type)
-                  : '${_getWorkoutTypeText((event as WorkoutEvent).type)} - ${(event).duration.inMinutes}min'
+                  ? _getMealTypeText((event as MealEvent).type)
+                  : '${_getWorkoutTypeText((event as WorkoutEvent).type)} - ${(event as WorkoutEvent).duration.inMinutes}min'
               ),
               subtitle: event.notes != null 
                 ? Text(event.notes!)
-                : null,
+                : event is MealEvent 
+                  ? Text((event as MealEvent).foods.map((f) => f.toString()).join(', '))
+                  : null,
               trailing: Text(
                 DateFormat('HH:mm').format(event.date),
               ),
