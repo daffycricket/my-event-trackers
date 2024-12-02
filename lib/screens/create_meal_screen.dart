@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_event_tracker/providers/events_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
+import 'package:intl/intl.dart';
 
 class CreateMealScreen extends ConsumerStatefulWidget {
   const CreateMealScreen({super.key});
@@ -16,6 +17,35 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen> {
   final _foodsController = TextEditingController();
   final _notesController = TextEditingController();
   MealType _selectedType = MealType.lunch;
+  DateTime _selectedDateTime = DateTime.now();
+
+  Future<void> _selectDateTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _selectedDateTime,
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2025),
+    );
+    
+    if (date != null) {
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+      );
+      
+      if (time != null) {
+        setState(() {
+          _selectedDateTime = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            time.hour,
+            time.minute,
+          );
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -39,6 +69,14 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen> {
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(labelText: 'Titre'),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              title: Text(
+                DateFormat('dd/MM/yyyy HH:mm').format(_selectedDateTime),
+              ),
+              trailing: const Icon(Icons.calendar_today),
+              onTap: _selectDateTime,
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<MealType>(
@@ -82,7 +120,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen> {
     final meal = MealEvent(
       id: const Uuid().v4(),
       title: _titleController.text,
-      date: DateTime.now(),
+      date: _selectedDateTime,
       type: _selectedType,
       foods: _foodsController.text.split(',').map((e) => e.trim()).toList(),
       notes: _notesController.text.isEmpty ? null : _notesController.text,

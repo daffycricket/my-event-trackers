@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_event_tracker/models/event.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import 'package:my_event_tracker/screens/create_workout_screen.dart';
@@ -9,6 +10,7 @@ import 'screens/meal_detail_screen.dart';
 import 'screens/workout_detail_screen.dart';
 
 void main() {
+  initializeDateFormatting('fr_FR');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -84,36 +86,101 @@ class EventList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
+    
+    // Grouper les événements par date
+    final groupedEvents = groupEventsByDate(events);
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: events.length,
+      itemCount: groupedEvents.length,
       itemBuilder: (context, index) {
-        final event = events[index];
-        return Card(
-          child: ListTile(
-            leading: Icon(
-              event is MealEvent ? Icons.restaurant : Icons.fitness_center,
-              color: Theme.of(context).primaryColor,
-            ),
-            title: Text(event.title),
-            subtitle: Text(
-              DateFormat('dd/MM/yyyy HH:mm').format(event.date),
-            ),
-            trailing: event is MealEvent
-                ? Text(event.type.name)
-                : Text('${(event as WorkoutEvent).duration.inMinutes}min'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => event is MealEvent
-                    ? MealDetailScreen(meal: event)
-                    : WorkoutDetailScreen(workout: event as WorkoutEvent),
+        final date = groupedEvents.keys.elementAt(index);
+        final dayEvents = groupedEvents[date]!;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                formatDate(date),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-          ),
+            ...dayEvents.map((event) => ListTile(
+              leading: Icon(
+                event is MealEvent ? Icons.restaurant : Icons.fitness_center,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(event.title),
+              subtitle: Text(
+                DateFormat('HH:mm').format(event.date),
+              ),
+              trailing: event is MealEvent
+                  ? Text(event.type.name)
+                  : Text('${(event as WorkoutEvent).duration.inMinutes}min'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => event is MealEvent
+                      ? MealDetailScreen(meal: event)
+                      : WorkoutDetailScreen(workout: event as WorkoutEvent),
+                ),
+              ),
+            )),
+            const Divider(),
+          ],
         );
       },
     );
+  }
+
+  Map<DateTime, List<Event>> groupEventsByDate(List<Event> events) {
+    final grouped = <DateTime, List<Event>>{};
+    
+    for (final event in events) {
+      final date = DateTime(
+        event.date.year,
+        event.date.month,
+        event.date.day,
+      );
+      
+      if (!grouped.containsKey(date)) {
+        grouped[date] = [];
+      }
+      grouped[date]!.add(event);
+    }
+
+    // Trier les événements de chaque jour par heure
+    for (final date in grouped.keys) {
+      grouped[date]!.sort((a, b) => a.date.compareTo(b.date));
+    }
+
+    // Trier les dates par ordre décroissant
+    return Map.fromEntries(
+      grouped.entries.toList()
+        ..sort((a, b) => b.key.compareTo(a.key))
+    );
+  }
+
+  String formatDate(DateTime date) {
+    final now = DateTime.now();
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    
+    if (date.year == now.year && 
+        date.month == now.month && 
+        date.day == now.day) {
+      return "Aujourd'hui";
+    } else if (date.year == yesterday.year && 
+               date.month == yesterday.month && 
+               date.day == yesterday.day) {
+      return "Hier";
+    } else if (date.year == tomorrow.year && 
+               date.month == tomorrow.month && 
+               date.day == tomorrow.day) {
+      return "Demain";
+    }
+    
+    return DateFormat('EEEE dd MMMM', 'fr_FR').format(date);
   }
 }

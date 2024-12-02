@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_event_tracker/providers/events_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
+import 'package:intl/intl.dart';
 
 class CreateWorkoutScreen extends ConsumerStatefulWidget {
   const CreateWorkoutScreen({super.key});
@@ -17,6 +18,35 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen> {
   final _caloriesController = TextEditingController();
   final _notesController = TextEditingController();
   WorkoutType _selectedType = WorkoutType.cardio;
+  DateTime _selectedDateTime = DateTime.now();
+
+  Future<void> _selectDateTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _selectedDateTime,
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2025),
+    );
+    
+    if (date != null) {
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+      );
+      
+      if (time != null) {
+        setState(() {
+          _selectedDateTime = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            time.hour,
+            time.minute,
+          );
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -41,6 +71,14 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen> {
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(labelText: 'Titre'),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              title: Text(
+                DateFormat('dd/MM/yyyy HH:mm').format(_selectedDateTime),
+              ),
+              trailing: const Icon(Icons.calendar_today),
+              onTap: _selectDateTime,
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<WorkoutType>(
@@ -93,7 +131,7 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen> {
     final workout = WorkoutEvent(
       id: const Uuid().v4(),
       title: _titleController.text,
-      date: DateTime.now(),
+      date: _selectedDateTime,
       type: _selectedType,
       duration: Duration(minutes: int.parse(_durationController.text)),
       caloriesBurned: _caloriesController.text.isEmpty 
