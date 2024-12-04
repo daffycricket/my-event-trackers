@@ -22,7 +22,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     final updatedWorkout = ref.watch(eventsProvider)
         .firstWhere((e) => e.id == widget.workout.id) as WorkoutEvent;
     
-    String _getWorkoutTypeText(WorkoutType type) {
+    String getWorkoutTypeText(WorkoutType type) {
       switch (type) {
         case WorkoutType.cardio:
           return l10n.cardio;
@@ -37,7 +37,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getWorkoutTypeText(updatedWorkout.type)),
+        title: Text(getWorkoutTypeText(updatedWorkout.type)),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -52,7 +52,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _getWorkoutTypeText(updatedWorkout.type),
+                      getWorkoutTypeText(updatedWorkout.type),
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
@@ -67,7 +67,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Chip(label: Text(_getWorkoutTypeText(updatedWorkout.type))),
+                    Chip(label: Text(getWorkoutTypeText(updatedWorkout.type))),
                   ],
                 ),
               ),

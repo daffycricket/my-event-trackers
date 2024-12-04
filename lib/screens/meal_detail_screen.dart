@@ -22,7 +22,7 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
     final updatedMeal = ref.watch(eventsProvider)
         .firstWhere((e) => e.id == widget.meal.id) as MealEvent;
 
-    String _getMealTypeText(MealType type) {
+    String getMealTypeText(MealType type) {
       switch (type) {
         case MealType.breakfast:
           return l10n.breakfast;
@@ -53,7 +53,7 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _getMealTypeText(updatedMeal.type),
+                        getMealTypeText(updatedMeal.type),
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 8),
@@ -68,7 +68,7 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Chip(label: Text(_getMealTypeText(updatedMeal.type))),
+                      Chip(label: Text(getMealTypeText(updatedMeal.type))),
                     ],
                   ),
                 ),

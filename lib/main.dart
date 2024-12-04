@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      locale: Locale('de', ''),
-      localizationsDelegates: const [
+      locale: Locale('sv', ''),
+      localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         Locale('fr', ''),
         Locale('en', ''),
         Locale('de', ''),
+        Locale('sv', ''),
       ],
       home: HomeScreen(),
     );
@@ -132,7 +133,7 @@ class EventList extends ConsumerWidget {
               subtitle: event.notes != null 
                 ? Text(event.notes!)
                 : event is MealEvent 
-                  ? Text((event as MealEvent).foods.map((f) => f.toString()).join(', '))
+                  ? Text((event).foods.map((f) => f.toString()).join(', '))
                   : null,
               trailing: Text(
                 DateFormat('HH:mm').format(event.date),
