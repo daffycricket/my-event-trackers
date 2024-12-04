@@ -1,148 +1,162 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum FoodCategory {
-  fruit, legume, produitLaitier, viande, volaille, poisson,
-  oeuf, feculent, boulangerie, patisserie, platsComposes,
-  snack, boisson, sauce,
+  fruits,
+  vegetables,
+  proteins,
+  carbs,
+  dairy,
+  drinks,
+  snacks
 }
 
-class CategoryFood {
-  final String name;
-  final FoodCategory category;
+extension FoodCategoryExtension on FoodCategory {
+  String getName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (this) {
+      case FoodCategory.fruits:
+        return l10n.categoryFruits;
+      case FoodCategory.vegetables:
+        return l10n.categoryVegetables;
+      case FoodCategory.proteins:
+        return l10n.categoryProteins;
+      case FoodCategory.carbs:
+        return l10n.categoryCarbs;
+      case FoodCategory.dairy:
+        return l10n.categoryDairy;
+      case FoodCategory.drinks:
+        return l10n.categoryDrinks;
+      case FoodCategory.snacks:
+        return l10n.categorySnacks;
+    }
+  }
 
-  const CategoryFood({
-    required this.name,
-    required this.category,
-  });
-}
-
-extension FoodCategoryColor on FoodCategory {
   Color get color {
     switch (this) {
-      case FoodCategory.fruit:
-        return Colors.red.shade200;
-      case FoodCategory.legume:
-        return Colors.green.shade200;
-      case FoodCategory.produitLaitier:
-        return Colors.blue.shade200;
-      case FoodCategory.viande:
-        return Colors.red.shade400;
-      case FoodCategory.volaille:
-        return Colors.orange.shade200;
-      case FoodCategory.poisson:
-        return Colors.blue.shade400;
-      case FoodCategory.oeuf:
-        return Colors.yellow.shade200;
-      case FoodCategory.feculent:
-        return Colors.brown.shade200;
-      case FoodCategory.boulangerie:
-        return Colors.brown.shade300;
-      case FoodCategory.patisserie:
-        return Colors.pink.shade200;
-      case FoodCategory.platsComposes:
-        return Colors.purple.shade200;
-      case FoodCategory.snack:
-        return Colors.orange.shade300;
-      case FoodCategory.boisson:
-        return Colors.lightBlue.shade200;
-      case FoodCategory.sauce:
-        return Colors.amber.shade200;
+      case FoodCategory.fruits:
+        return Colors.orange;
+      case FoodCategory.vegetables:
+        return Colors.green;
+      case FoodCategory.proteins:
+        return Colors.red;
+      case FoodCategory.carbs:
+        return Colors.brown;
+      case FoodCategory.dairy:
+        return Colors.blue;
+      case FoodCategory.drinks:
+        return Colors.purple;
+      case FoodCategory.snacks:
+        return Colors.yellow;
     }
   }
 }
 
-const foodSuggestions = [
-  // Fruit
-  CategoryFood(name: 'Pomme', category: FoodCategory.fruit),
-  CategoryFood(name: 'Banane', category: FoodCategory.fruit),
-  CategoryFood(name: 'Orange', category: FoodCategory.fruit),
-  CategoryFood(name: 'Poire', category: FoodCategory.fruit),
-  CategoryFood(name: 'Raisin', category: FoodCategory.fruit),
-  CategoryFood(name: 'Fraise', category: FoodCategory.fruit),
-  CategoryFood(name: 'Abricot sec', category: FoodCategory.fruit),
-  
-  // Légumes
-  CategoryFood(name: 'Carotte', category: FoodCategory.legume),
-  CategoryFood(name: 'Tomate', category: FoodCategory.legume),
-  CategoryFood(name: 'Salade', category: FoodCategory.legume),
-  CategoryFood(name: 'Courgette', category: FoodCategory.legume),
-  CategoryFood(name: 'Haricots verts', category: FoodCategory.legume),
-  CategoryFood(name: 'Épinards', category: FoodCategory.legume),
-  CategoryFood(name: 'Lentilles', category: FoodCategory.legume),
-  
-  // Produits laitiers
-  CategoryFood(name: 'Yaourt nature', category: FoodCategory.produitLaitier),
-  CategoryFood(name: 'Fromage blanc', category: FoodCategory.produitLaitier),
-  CategoryFood(name: 'Camembert', category: FoodCategory.produitLaitier),
-  CategoryFood(name: 'Emmental', category: FoodCategory.produitLaitier),
-  CategoryFood(name: 'Lait', category: FoodCategory.produitLaitier),
-  
-  // Viandes
-  CategoryFood(name: 'Steak haché', category: FoodCategory.viande),
-  CategoryFood(name: 'Côte de bœuf', category: FoodCategory.viande),
-  CategoryFood(name: 'Côtelette de porc', category: FoodCategory.viande),
-  CategoryFood(name: 'Gigot d\'agneau', category: FoodCategory.viande),
-  CategoryFood(name: 'Jambon blanc', category: FoodCategory.viande),
-  
-  // Volailles
-  CategoryFood(name: 'Blanc de poulet', category: FoodCategory.volaille),
-  CategoryFood(name: 'Cuisse de poulet', category: FoodCategory.volaille),
-  CategoryFood(name: 'Escalope de dinde', category: FoodCategory.volaille),
-  CategoryFood(name: 'Magret de canard', category: FoodCategory.volaille),
-  
-  // Poissons
-  CategoryFood(name: 'Saumon', category: FoodCategory.poisson),
-  CategoryFood(name: 'Thon', category: FoodCategory.poisson),
-  CategoryFood(name: 'Cabillaud', category: FoodCategory.poisson),
-  CategoryFood(name: 'Crevettes', category: FoodCategory.poisson),
-  CategoryFood(name: 'Moules', category: FoodCategory.poisson),
-  
-  // Œufs
-  CategoryFood(name: 'Œuf', category: FoodCategory.oeuf),
-  CategoryFood(name: 'Omelette', category: FoodCategory.oeuf),
-  
-  // Féculents
-  CategoryFood(name: 'Riz blanc', category: FoodCategory.feculent),
-  CategoryFood(name: 'Pâtes', category: FoodCategory.feculent),
-  CategoryFood(name: 'Pomme de terre', category: FoodCategory.feculent),
-  CategoryFood(name: 'Semoule', category: FoodCategory.feculent),
-  CategoryFood(name: 'Quinoa', category: FoodCategory.feculent),
-  
-  // Boulangerie
-  CategoryFood(name: 'Baguette', category: FoodCategory.boulangerie),
-  CategoryFood(name: 'Pain complet', category: FoodCategory.boulangerie),
-  CategoryFood(name: 'Croissant', category: FoodCategory.boulangerie),
-  CategoryFood(name: 'Pain au chocolat', category: FoodCategory.boulangerie),
-  
-  // Pâtisseries
-  CategoryFood(name: 'Éclair chocolat', category: FoodCategory.patisserie),
-  CategoryFood(name: 'Tarte aux pommes', category: FoodCategory.patisserie),
-  CategoryFood(name: 'Gâteau yaourt', category: FoodCategory.patisserie),
-  CategoryFood(name: 'Brownie', category: FoodCategory.patisserie),
-  
-  // Plats composés
-  CategoryFood(name: 'Pizza', category: FoodCategory.platsComposes),
-  CategoryFood(name: 'Lasagnes', category: FoodCategory.platsComposes),
-  CategoryFood(name: 'Quiche lorraine', category: FoodCategory.platsComposes),
-  CategoryFood(name: 'Couscous', category: FoodCategory.platsComposes),
-  CategoryFood(name: 'Hachis parmentier', category: FoodCategory.platsComposes),
-  
-  // Snacks
-  CategoryFood(name: 'Chips', category: FoodCategory.snack),
-  CategoryFood(name: 'Cacahuètes', category: FoodCategory.snack),
-  CategoryFood(name: 'Biscuits salés', category: FoodCategory.snack),
-  CategoryFood(name: 'Fruits secs', category: FoodCategory.snack),
-  
-  // Boissons
-  CategoryFood(name: 'Eau', category: FoodCategory.boisson),
-  CategoryFood(name: 'Café', category: FoodCategory.boisson),
-  CategoryFood(name: 'Thé', category: FoodCategory.boisson),
-  CategoryFood(name: 'Jus d\'orange', category: FoodCategory.boisson),
-  CategoryFood(name: 'Soda', category: FoodCategory.boisson),
-  
-  // Sauces et condiments
-  CategoryFood(name: 'Mayonnaise', category: FoodCategory.sauce),
-  CategoryFood(name: 'Ketchup', category: FoodCategory.sauce),
-  CategoryFood(name: 'Moutarde', category: FoodCategory.sauce),
-  CategoryFood(name: 'Vinaigrette', category: FoodCategory.sauce),
-]; 
+class CategoryFood {
+  final String Function(BuildContext) nameGetter;
+  final FoodCategory category;
+
+  CategoryFood({
+    required this.nameGetter,
+    required this.category,
+  });
+
+  String getName(BuildContext context) => nameGetter(context);
+}
+
+List<CategoryFood> getFoodSuggestions(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return [
+    // Fruits
+    CategoryFood(
+      nameGetter: (context) => l10n.foodApple,
+      category: FoodCategory.fruits,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodBanana,
+      category: FoodCategory.fruits,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodOrange,
+      category: FoodCategory.fruits,
+    ),
+    // Légumes
+    CategoryFood(
+      nameGetter: (context) => l10n.foodCarrot,
+      category: FoodCategory.vegetables,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodTomato,
+      category: FoodCategory.vegetables,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodCucumber,
+      category: FoodCategory.vegetables,
+    ),
+    // Protéines
+    CategoryFood(
+      nameGetter: (context) => l10n.foodChicken,
+      category: FoodCategory.proteins,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodBeef,
+      category: FoodCategory.proteins,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodFish,
+      category: FoodCategory.proteins,
+    ),
+    // Féculents
+    CategoryFood(
+      nameGetter: (context) => l10n.foodRice,
+      category: FoodCategory.carbs,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodPasta,
+      category: FoodCategory.carbs,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodBread,
+      category: FoodCategory.carbs,
+    ),
+    // Produits laitiers
+    CategoryFood(
+      nameGetter: (context) => l10n.foodMilk,
+      category: FoodCategory.dairy,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodYogurt,
+      category: FoodCategory.dairy,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodCheese,
+      category: FoodCategory.dairy,
+    ),
+    // Boissons
+    CategoryFood(
+      nameGetter: (context) => l10n.foodWater,
+      category: FoodCategory.drinks,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodCoffee,
+      category: FoodCategory.drinks,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodTea,
+      category: FoodCategory.drinks,
+    ),
+    // Snacks
+    CategoryFood(
+      nameGetter: (context) => l10n.foodCookies,
+      category: FoodCategory.snacks,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodChips,
+      category: FoodCategory.snacks,
+    ),
+    CategoryFood(
+      nameGetter: (context) => l10n.foodNuts,
+      category: FoodCategory.snacks,
+    ),
+  ];
+} 

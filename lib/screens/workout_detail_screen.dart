@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:my_event_tracker/providers/events_provider.dart';
 import 'package:my_event_tracker/screens/create_workout_screen.dart';
 import '../models/event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WorkoutDetailScreen extends ConsumerStatefulWidget {
   final WorkoutEvent workout;
@@ -17,13 +18,26 @@ class WorkoutDetailScreen extends ConsumerStatefulWidget {
 class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    // Récupérer la version à jour depuis le provider
+    final l10n = AppLocalizations.of(context)!;
     final updatedWorkout = ref.watch(eventsProvider)
         .firstWhere((e) => e.id == widget.workout.id) as WorkoutEvent;
     
+    String _getWorkoutTypeText(WorkoutType type) {
+      switch (type) {
+        case WorkoutType.cardio:
+          return l10n.cardio;
+        case WorkoutType.strength:
+          return l10n.strength;
+        case WorkoutType.flexibility:
+          return l10n.flexibility;
+        case WorkoutType.sport:
+          return l10n.sport;
+      }
+    }
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(updatedWorkout.type.name),
+        title: Text(_getWorkoutTypeText(updatedWorkout.type)),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -38,7 +52,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      updatedWorkout.type.name,
+                      _getWorkoutTypeText(updatedWorkout.type),
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
@@ -53,7 +67,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Chip(label: Text(updatedWorkout.type.name)),
+                    Chip(label: Text(_getWorkoutTypeText(updatedWorkout.type))),
                   ],
                 ),
               ),
@@ -67,8 +81,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Durée'),
-                        Text('${updatedWorkout.duration.inMinutes} minutes'),
+                        Text(l10n.duration),
+                        Text('${updatedWorkout.duration.inMinutes} ${l10n.minutes}'),
                       ],
                     ),
                     if (updatedWorkout.caloriesBurned != null) ...[
@@ -76,8 +90,8 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Calories brûlées'),
-                          Text('${updatedWorkout.caloriesBurned} kcal'),
+                          Text(l10n.caloriesBurned),
+                          Text('${updatedWorkout.caloriesBurned} ${l10n.kcal}'),
                         ],
                       ),
                     ],
@@ -88,7 +102,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
             if (updatedWorkout.notes != null) ...[
               const SizedBox(height: 16),
               Text(
-                'Notes',
+                l10n.notes,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
@@ -112,7 +126,7 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
           ).then((_) => setState(() {})); // Force refresh après modification
         },
         icon: const Icon(Icons.edit),
-        label: const Text('Modifier'),
+        label: Text(l10n.edit),
       ),
     );
   }

@@ -65,10 +65,11 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     }
   }
 
-  Widget _buildSuggestions() {
-    // Grouper les suggestions par catégorie
+  Widget _buildSuggestions(BuildContext context) {
     final groupedSuggestions = <FoodCategory, List<CategoryFood>>{};
-    for (var food in foodSuggestions) {
+    final suggestions = getFoodSuggestions(context);
+    
+    for (var food in suggestions) {
       groupedSuggestions.putIfAbsent(food.category, () => []).add(food);
     }
 
@@ -78,39 +79,92 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
         final category = entry.key;
         final foods = entry.value;
         
-        // Filtrer les aliments déjà sélectionnés
-        final availableFoods = foods.where(
-          (food) => !_foodControllers.map((c) => c.text).contains(food.name)
-        ).toList();
-
-        if (availableFoods.isEmpty) return const SizedBox.shrink();
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                category.name,
+                category.getName(context),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
             Wrap(
-              children: availableFoods.map((food) => FoodTag(
-                name: food.name,
+              children: foods.map((food) => FoodTag(
+                name: food.getName(context),
                 color: food.category.color,
-                onTap: () {
-                  setState(() {
-                    _foodControllers.add(TextEditingController(text: food.name));
-                    _quantityControllers.add(TextEditingController(text: '1'));
-                  });
-                },
+                onTap: () => _addFoodItem(food.getName(context)),
               )).toList(),
             ),
           ],
         );
       }).toList(),
     );
+  }
+
+  void _addFoodItem(String foodName) {
+    final l10n = AppLocalizations.of(context)!;
+    final localizedFoodName = _getLocalizedFoodName(l10n, foodName);
+    setState(() {
+      _foodControllers.add(TextEditingController(text: localizedFoodName));
+      _quantityControllers.add(TextEditingController(text: '1'));
+    });
+  }
+
+  String _getLocalizedFoodName(AppLocalizations l10n, String foodName) {
+    switch (foodName) {
+      // Fruits
+      case 'Apple':
+        return l10n.foodApple;
+      case 'Banana':
+        return l10n.foodBanana;
+      case 'Orange':
+        return l10n.foodOrange;
+      // Légumes
+      case 'Carrot':
+        return l10n.foodCarrot;
+      case 'Tomato':
+        return l10n.foodTomato;
+      case 'Cucumber':
+        return l10n.foodCucumber;
+      // Protéines
+      case 'Chicken':
+        return l10n.foodChicken;
+      case 'Beef':
+        return l10n.foodBeef;
+      case 'Fish':
+        return l10n.foodFish;
+      // Féculents
+      case 'Rice':
+        return l10n.foodRice;
+      case 'Pasta':
+        return l10n.foodPasta;
+      case 'Bread':
+        return l10n.foodBread;
+      // Produits laitiers
+      case 'Milk':
+        return l10n.foodMilk;
+      case 'Yogurt':
+        return l10n.foodYogurt;
+      case 'Cheese':
+        return l10n.foodCheese;
+      // Boissons
+      case 'Water':
+        return l10n.foodWater;
+      case 'Coffee':
+        return l10n.foodCoffee;
+      case 'Tea':
+        return l10n.foodTea;
+      // Snacks
+      case 'Cookies':
+        return l10n.foodCookies;
+      case 'Chips':
+        return l10n.foodChips;
+      case 'Nuts':
+        return l10n.foodNuts;
+      default:
+        return foodName;
+    }
   }
 
   @override
@@ -182,7 +236,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              _buildSuggestions(),
+              _buildSuggestions(context),
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(

@@ -2,11 +2,13 @@ import 'dart:math';
 import 'package:my_event_tracker/models/food_item.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
-import '../data/food_suggestions.dart';
+import '../data/static_food_data.dart';
 
 class RandomDataGenerator {
   final _random = Random();
   final _uuid = const Uuid();
+
+  RandomDataGenerator();
 
   List<Event> generateRandomEvents() {
     final events = <Event>[];
@@ -92,21 +94,21 @@ class RandomDataGenerator {
 
     final numberOfFoods = _random.nextInt(maxFoods - minFoods + 1) + minFoods;
     final foods = <FoodItem>[];
-    final availableFoods = List<CategoryFood>.from(foodSuggestions);
+    final availableFoods = List<StaticFood>.from(staticFoodSuggestions);
     
     // Sélectionner des aliments appropriés selon le type de repas
     for (var i = 0; i < numberOfFoods; i++) {
       if (availableFoods.isEmpty) break;
       
-      CategoryFood selectedFood;
+      StaticFood selectedFood;
       if (type == MealType.breakfast) {
         // Favoriser les produits laitiers, fruits et boulangerie pour le petit déjeuner
         selectedFood = _selectFoodByCategories(availableFoods, 
-          [FoodCategory.produitLaitier, FoodCategory.fruit, FoodCategory.boulangerie]);
+          [FoodCategory.dairy, FoodCategory.fruits, FoodCategory.carbs]);
       } else if (type == MealType.snack) {
         // Favoriser les fruits et snacks pour les collations
         selectedFood = _selectFoodByCategories(availableFoods, 
-          [FoodCategory.fruit, FoodCategory.snack]);
+          [FoodCategory.fruits, FoodCategory.snacks]);
       } else {
         selectedFood = availableFoods[_random.nextInt(availableFoods.length)];
       }
@@ -127,7 +129,7 @@ class RandomDataGenerator {
     );
   }
 
-  CategoryFood _selectFoodByCategories(List<CategoryFood> availableFoods, List<FoodCategory> preferredCategories) {
+  StaticFood _selectFoodByCategories(List<StaticFood> availableFoods, List<FoodCategory> preferredCategories) {
     final preferredFoods = availableFoods.where((food) => preferredCategories.contains(food.category)).toList();
     if (preferredFoods.isNotEmpty && _random.nextDouble() < 0.7) { // 70% de chance de choisir un aliment préféré
       return preferredFoods[_random.nextInt(preferredFoods.length)];
