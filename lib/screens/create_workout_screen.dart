@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateWorkoutScreen extends ConsumerStatefulWidget {
   final WorkoutEvent? workoutToEdit;
@@ -44,18 +45,18 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.workoutToEdit != null ? 'Modifier la séance' : 'Nouvelle séance'),
+        title: Text(widget.workoutToEdit != null ? l10n.editWorkout : l10n.newWorkout),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Type de workout
             Text(
-              'Type d\'activité',
+              l10n.activityType,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -69,9 +70,8 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
             ),
             const SizedBox(height: 24),
 
-            // Date et heure
             Text(
-              'Date et heure',
+              l10n.dateAndTime,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -85,25 +85,23 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
             ),
             const SizedBox(height: 24),
 
-            // Notes
             Text(
-              'Notes',
+              l10n.notes,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _notesController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ajouter des notes...',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.addNotes,
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 24),
 
-            // Durée et calories (optionnel)
             Text(
-              'Détails additionnels',
+              l10n.additionalDetails,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -112,9 +110,9 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
                 Expanded(
                   child: TextField(
                     controller: _durationController,
-                    decoration: const InputDecoration(
-                      labelText: 'Durée (minutes)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.duration,
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -124,9 +122,9 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
                 Expanded(
                   child: TextField(
                     controller: _caloriesController,
-                    decoration: const InputDecoration(
-                      labelText: 'Calories',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.calories,
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -136,12 +134,11 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
             ),
             const SizedBox(height: 24),
 
-            // Bouton de sauvegarde
             Center(
               child: ElevatedButton(
                 onPressed: _saveWorkout,
                 child: Text(
-                  widget.workoutToEdit != null ? 'Mettre à jour' : 'Sauvegarder',
+                  l10n.update,
                 ),
               ),
             ),

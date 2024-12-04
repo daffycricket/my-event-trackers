@@ -9,6 +9,7 @@ import '../models/food_item.dart';
 import 'package:flutter/services.dart';
 import '../data/food_suggestions.dart';
 import '../widgets/food_tag.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateMealScreen extends ConsumerStatefulWidget {
   final MealEvent? mealToEdit;
@@ -51,17 +52,16 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   }
 
   String _getMealTypeText(MealType type) {
+    final l10n = AppLocalizations.of(context)!;
     switch (type) {
       case MealType.breakfast:
-        return 'Petit déjeuner';
+        return l10n.breakfast;
       case MealType.lunch:
-        return 'Déjeuner';
+        return l10n.lunch;
       case MealType.dinner:
-        return 'Dîner';
+        return l10n.dinner;
       case MealType.snack:
-        return 'Collation';
-      default:
-        return '';
+        return l10n.snack;
     }
   }
 
@@ -115,9 +115,10 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.mealToEdit != null ? 'Modifier le repas' : 'Nouveau repas'),
+        title: Text(widget.mealToEdit != null ? l10n.editMeal : l10n.newMeal),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -141,7 +142,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                'Aliments sélectionnés',
+                l10n.selectedFoods,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
@@ -158,8 +159,8 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
                         width: 60,
                         child: TextField(
                           controller: _quantityControllers[index],
-                          decoration: const InputDecoration(
-                            labelText: 'Qté',
+                          decoration: InputDecoration(
+                            labelText: l10n.quantity,
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -177,7 +178,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
               ),
               const Divider(),
               Text(
-                'Suggestions',
+                l10n.suggestions,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
@@ -186,7 +187,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
               Center(
                 child: ElevatedButton(
                   onPressed: _saveMeal,
-                  child: Text(widget.mealToEdit != null ? 'Mettre à jour' : 'Sauvegarder'),
+                  child: Text(widget.mealToEdit != null ? l10n.update : l10n.save),
                 ),
               ),
             ],

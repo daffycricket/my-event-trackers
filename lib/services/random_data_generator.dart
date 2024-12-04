@@ -136,7 +136,7 @@ class RandomDataGenerator {
   }
 
   WorkoutEvent _generateRandomWorkout(DateTime date) {
-    final types = WorkoutType.values;
+    const types = WorkoutType.values;
     return WorkoutEvent(
       id: _uuid.v4(),
       date: date,

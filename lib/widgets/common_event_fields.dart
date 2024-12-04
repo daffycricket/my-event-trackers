@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommonEventFields extends StatelessWidget {
   final DateTime selectedDateTime;
@@ -15,6 +16,7 @@ class CommonEventFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -27,9 +29,9 @@ class CommonEventFields extends StatelessWidget {
         ),
         TextField(
           controller: notesController,
-          decoration: const InputDecoration(
-            labelText: 'Notes',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.notes,
+            border: const OutlineInputBorder(),
           ),
           maxLines: 3,
         ),

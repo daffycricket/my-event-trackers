@@ -8,9 +8,11 @@ import 'package:my_event_tracker/screens/create_workout_screen.dart';
 import 'providers/events_provider.dart';
 import 'screens/meal_detail_screen.dart';
 import 'screens/workout_detail_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-  initializeDateFormatting('fr_FR');
+  initializeDateFormatting();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -20,7 +22,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Suivi des Événements',
+      locale: Locale('de', ''),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('fr', ''),
+        Locale('en', ''),
+        Locale('de', ''),
+      ],
       home: HomeScreen(),
     );
   }
@@ -33,7 +46,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Événements Quotidiens'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: const EventList(),
@@ -47,13 +60,13 @@ class HomeScreen extends StatelessWidget {
               heroTag: 'meal_fab',
               onPressed: () => _showMealForm(context),
               icon: const Icon(Icons.restaurant),
-              label: const Text('Repas'),
+              label: Text(AppLocalizations.of(context)!.meal),
             ),
             FloatingActionButton.extended(
               heroTag: 'workout_fab',
               onPressed: () => _showWorkoutForm(context),
               icon: const Icon(Icons.fitness_center),
-              label: const Text('Exercice'),
+              label: Text(AppLocalizations.of(context)!.workout),
             ),
           ],
         ),
@@ -102,7 +115,7 @@ class EventList extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                formatDate(date),
+                formatDate(date, context),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -113,8 +126,8 @@ class EventList extends ConsumerWidget {
               ),
               title: Text(
                 event is MealEvent 
-                  ? _getMealTypeText((event as MealEvent).type)
-                  : '${_getWorkoutTypeText((event as WorkoutEvent).type)} - ${(event as WorkoutEvent).duration.inMinutes}min'
+                  ? _getMealTypeText(event.type, context)
+                  : '${_getWorkoutTypeText((event as WorkoutEvent).type, context)} - ${event.duration.inMinutes}min'
               ),
               subtitle: event.notes != null 
                 ? Text(event.notes!)
@@ -168,51 +181,45 @@ class EventList extends ConsumerWidget {
     );
   }
 
-  String formatDate(DateTime date) {
+  String formatDate(DateTime date, BuildContext context) {
     final now = DateTime.now();
     final yesterday = DateTime(now.year, now.month, now.day - 1);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
     
-    if (date.year == now.year && 
-        date.month == now.month && 
-        date.day == now.day) {
-      return "Aujourd'hui";
-    } else if (date.year == yesterday.year && 
-               date.month == yesterday.month && 
-               date.day == yesterday.day) {
-      return "Hier";
-    } else if (date.year == tomorrow.year && 
-               date.month == tomorrow.month && 
-               date.day == tomorrow.day) {
-      return "Demain";
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      return AppLocalizations.of(context)!.today;
+    } else if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+      return AppLocalizations.of(context)!.yesterday;
+    } else if (date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day) {
+      return AppLocalizations.of(context)!.tomorrow;
     }
     
-    return DateFormat('EEEE dd MMMM', 'fr_FR').format(date);
+    return DateFormat('EEEE dd MMMM', Localizations.localeOf(context).toString()).format(date);
   }
 
-  String _getMealTypeText(MealType type) {
+  String _getMealTypeText(MealType type, BuildContext context) {
     switch (type) {
       case MealType.breakfast:
-        return 'Petit déjeuner';
+        return AppLocalizations.of(context)!.breakfast;
       case MealType.lunch:
-        return 'Déjeuner';
+        return AppLocalizations.of(context)!.lunch;
       case MealType.dinner:
-        return 'Dîner';
+        return AppLocalizations.of(context)!.dinner;
       case MealType.snack:
-        return 'Collation';
+        return AppLocalizations.of(context)!.snack;
     }
   }
 
-  String _getWorkoutTypeText(WorkoutType type) {
+  String _getWorkoutTypeText(WorkoutType type, BuildContext context) {
     switch (type) {
       case WorkoutType.cardio:
-        return 'Cardio';
+        return AppLocalizations.of(context)!.cardio;
       case WorkoutType.strength:
-        return 'Musculation';
+        return AppLocalizations.of(context)!.strength;
       case WorkoutType.flexibility:
-        return 'Étirements';
+        return AppLocalizations.of(context)!.flexibility;
       case WorkoutType.sport:
-        return 'Sport';
+        return AppLocalizations.of(context)!.sport;
     }
   }
 }
