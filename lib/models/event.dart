@@ -1,4 +1,3 @@
-
 import 'package:my_event_tracker/models/food_item.dart';
 
 abstract class Event {
@@ -52,15 +51,16 @@ class MealEvent extends Event {
 
   factory MealEvent.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>;
+    final mealItems = json['meal_items'] as List<dynamic>;
+    
     return MealEvent(
       id: json['id'],
       date: DateTime.parse(json['date']),
       notes: json['notes'],
-      foods: (data['foods'] as List)
-          .map((food) => FoodItem.fromJson(food))
-          .toList(),
+      foods: mealItems.map((item) => FoodItem.fromJson(item)).toList(),
       type: MealType.values.firstWhere(
         (e) => e.name == data['type'],
+        orElse: () => MealType.snack, // valeur par défaut
       ),
     );
   }

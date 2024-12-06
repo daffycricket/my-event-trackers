@@ -16,8 +16,22 @@ class ApiService {
       _logger.fine('Response body: ${response.body}');
       
       if (response.statusCode == 200) {
-        final List<dynamic> jsonList = json.decode(response.body);
-        return jsonList.map((json) => Event.fromJson(json)).toList();
+        final dynamic decodedResponse = json.decode(response.body);
+        
+        // Log pour débugger la structure de la réponse
+        _logger.info('Decoded response type: ${decodedResponse.runtimeType}');
+        _logger.info('Decoded response: $decodedResponse');
+        
+        if (decodedResponse == null) {
+          return [];
+        }
+        
+        if (decodedResponse is List) {
+          return decodedResponse.map((json) => Event.fromJson(json)).toList();
+        } else {
+          _logger.warning('Unexpected response format: $decodedResponse');
+          return [];
+        }
       } else {
         throw Exception('Failed to load events: ${response.statusCode}');
       }

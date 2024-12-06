@@ -1,27 +1,54 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/event.dart';
-import '../services/random_data_generator.dart';
+import '../services/api_service.dart';
+
+final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
 
 final eventsProvider = StateNotifierProvider<EventsNotifier, List<Event>>((ref) {
-  return EventsNotifier(RandomDataGenerator().generateRandomEvents());
+  final apiService = ref.watch(apiServiceProvider);
+  return EventsNotifier(apiService);
 });
 
 class EventsNotifier extends StateNotifier<List<Event>> {
-  EventsNotifier(this.events) : super(events);
+  final ApiService _apiService;
 
-  final List<Event> events;
-
-  void addEvent(Event event) {
-    state = [...state, event];
+  EventsNotifier(this._apiService) : super([]) {
+    loadEvents();
   }
 
-  Event getEventById(String id) {
-    return state.firstWhere((event) => event.id == id);
+  Future<void> loadEvents() async {
+    try {
+      final events = await _apiService.getEvents();
+      state = events;
+    } catch (e) {
+      rethrow;
+    }
   }
 
-    void updateEvent(Event updatedEvent) {
-    state = state.map((event) => 
-      event.id == updatedEvent.id ? updatedEvent : event
-    ).toList();
+  Future<void> addEvent(Event event) async {
+    try {
+      final newEvent = await _apiService.createEvent(event);
+      state = [...state, newEvent];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateEvent(Event event) async {
+    try {
+      final updatedEvent = await _apiService.updateEvent(event.id, event);
+      state = state.map((e) => e.id == event.id ? updatedEvent : e).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteEvent(String id) async {
+    try {
+      await _apiService.deleteEvent(id);
+      state = state.where((e) => e.id != id).toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 } 
