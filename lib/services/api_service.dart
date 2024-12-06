@@ -43,22 +43,25 @@ class ApiService {
 
   Future<Event> createEvent(Event event) async {
     try {
-      _logger.info('Creating event');
-      _logger.fine('Event data: ${event.toJson()}');
-      
+      final jsonData = event.toJson();
+      _logger.info('Creating event at $baseUrl/events/');
+      _logger.info('Request payload:\n${const JsonEncoder.withIndent('  ').convert(jsonData)}');
+
       final response = await http.post(
         Uri.parse('$baseUrl/events/'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(event.toJson()),
+        body: json.encode(jsonData),
       );
       
       _logger.info('Response status: ${response.statusCode}');
-      _logger.fine('Response body: ${response.body}');
+      _logger.info('Response body:\n${const JsonEncoder.withIndent('  ').convert(json.decode(response.body))}');
       
       if (response.statusCode == 200) {
         return Event.fromJson(json.decode(response.body));
       } else {
-        throw Exception('Failed to create event: ${response.statusCode}');
+        final error = 'Failed to create event: ${response.statusCode}\nBody: ${response.body}';
+        _logger.severe(error);
+        throw Exception(error);
       }
     } catch (e, stackTrace) {
       _logger.severe('Error creating event', e, stackTrace);
