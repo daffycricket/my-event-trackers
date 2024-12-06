@@ -65,5 +65,12 @@
     "foodTea": "Te",
     "foodCookies": "Kakor",
     "foodChips": "Chips",
-    "foodNuts": "Nötter"
+    "foodNuts": "Nötter",
+
+    "deleteEventTitle": "Radera händelse",
+    "deleteEventConfirmation": "Är du säker på att du vill radera denna händelse?",
+    "delete": "Radera",
+    "cancel": "Avbryt",
+    "eventDeleted": "Händelse raderad",
+    "undo": "Ångra"
 } 

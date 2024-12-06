@@ -63,5 +63,11 @@
     "edit": "Edit",
     "minutes": "minutes",
     "caloriesBurned": "Calories burned",
-    "kcal": "kcal"
+    "kcal": "kcal",
+    "deleteEventTitle": "Delete event",
+    "deleteEventConfirmation": "Are you sure you want to delete this event?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "eventDeleted": "Event deleted",
+    "undo": "Undo"
 } 

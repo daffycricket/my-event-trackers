@@ -63,5 +63,11 @@
     "edit": "Bearbeiten",
     "minutes": "Minuten",
     "caloriesBurned": "Verbrannte Kalorien",
-    "kcal": "kcal"
+    "kcal": "kcal",
+    "deleteEventTitle": "Ereignis löschen",
+    "deleteEventConfirmation": "Möchten Sie dieses Ereignis wirklich löschen?",
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "eventDeleted": "Ereignis gelöscht",
+    "undo": "Rückgängig"
 } 

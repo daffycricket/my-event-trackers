@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_event_tracker/models/event.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import 'package:my_event_tracker/screens/create_workout_screen.dart';
+import 'package:my_event_tracker/widgets/event_list_item.dart';
 import 'providers/events_provider.dart';
 import 'screens/meal_detail_screen.dart';
 import 'screens/workout_detail_screen.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      locale: Locale('sv', ''),
+      locale: Locale('fr', ''),
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -113,9 +114,7 @@ class EventList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
-    
-    // Grouper les événements par date
-    final groupedEvents = groupEventsByDate(events);
+    final groupedEvents = _groupEventsByDay(events);
 
     return ListView.builder(
       itemCount: groupedEvents.length,
@@ -127,47 +126,21 @@ class EventList extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16.0),
               child: Text(
-                formatDate(date, context),
-                style: Theme.of(context).textTheme.titleLarge,
+                _formatDate(date, context),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            ...dayEvents.map((event) => ListTile(
-              leading: Icon(
-                event is MealEvent ? Icons.restaurant : Icons.fitness_center,
-                color: Theme.of(context).primaryColor,
-              ),
-              title: Text(
-                event is MealEvent 
-                  ? _getMealTypeText(event.type, context)
-                  : '${_getWorkoutTypeText((event as WorkoutEvent).type, context)} - ${event.duration.inMinutes}min'
-              ),
-              subtitle: event.notes != null 
-                ? Text(event.notes!)
-                : event is MealEvent 
-                  ? Text((event).foods.map((f) => f.toString()).join(', '))
-                  : null,
-              trailing: Text(
-                DateFormat('HH:mm').format(event.date),
-              ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => event is MealEvent
-                      ? MealDetailScreen(meal: event)
-                      : WorkoutDetailScreen(workout: event as WorkoutEvent),
-                ),
-              ),
-            )),
-            const Divider(),
+            ...dayEvents.map((event) => EventListItem(event: event)).toList(),
+            if (index < groupedEvents.length - 1) const Divider(),
           ],
         );
       },
     );
   }
 
-  Map<DateTime, List<Event>> groupEventsByDate(List<Event> events) {
+  Map<DateTime, List<Event>> _groupEventsByDay(List<Event> events) {
     final grouped = <DateTime, List<Event>>{};
     
     for (final event in events) {
@@ -183,57 +156,32 @@ class EventList extends ConsumerWidget {
       grouped[date]!.add(event);
     }
 
-    // Trier les événements de chaque jour par heure
-    for (final date in grouped.keys) {
-      grouped[date]!.sort((a, b) => a.date.compareTo(b.date));
-    }
-
-    // Trier les dates par ordre décroissant
     return Map.fromEntries(
       grouped.entries.toList()
         ..sort((a, b) => b.key.compareTo(a.key))
     );
   }
 
-  String formatDate(DateTime date, BuildContext context) {
+  String _formatDate(DateTime date, BuildContext context) {
     final now = DateTime.now();
     final yesterday = DateTime(now.year, now.month, now.day - 1);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    
-    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+    final locale = Localizations.localeOf(context).languageCode;
+
+    if (date.year == now.year && 
+        date.month == now.month && 
+        date.day == now.day) {
       return AppLocalizations.of(context)!.today;
-    } else if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+    } else if (date.year == yesterday.year && 
+               date.month == yesterday.month && 
+               date.day == yesterday.day) {
       return AppLocalizations.of(context)!.yesterday;
-    } else if (date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day) {
+    } else if (date.year == tomorrow.year && 
+               date.month == tomorrow.month && 
+               date.day == tomorrow.day) {
       return AppLocalizations.of(context)!.tomorrow;
     }
-    
-    return DateFormat('EEEE dd MMMM', Localizations.localeOf(context).toString()).format(date);
-  }
 
-  String _getMealTypeText(MealType type, BuildContext context) {
-    switch (type) {
-      case MealType.breakfast:
-        return AppLocalizations.of(context)!.breakfast;
-      case MealType.lunch:
-        return AppLocalizations.of(context)!.lunch;
-      case MealType.dinner:
-        return AppLocalizations.of(context)!.dinner;
-      case MealType.snack:
-        return AppLocalizations.of(context)!.snack;
-    }
-  }
-
-  String _getWorkoutTypeText(WorkoutType type, BuildContext context) {
-    switch (type) {
-      case WorkoutType.cardio:
-        return AppLocalizations.of(context)!.cardio;
-      case WorkoutType.strength:
-        return AppLocalizations.of(context)!.strength;
-      case WorkoutType.flexibility:
-        return AppLocalizations.of(context)!.flexibility;
-      case WorkoutType.sport:
-        return AppLocalizations.of(context)!.sport;
-    }
+    return DateFormat.yMMMMd(locale).format(date);
   }
 }

@@ -64,5 +64,12 @@
     "edit": "Modifier",
     "minutes": "minutes",
     "caloriesBurned": "Calories brûlées",
-    "kcal": "kcal"
+    "kcal": "kcal",
+    "deleteEventTitle": "Supprimer l'événement",
+    "deleteEventConfirmation": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "eventDeleted": "Événement supprimé",
+    "undo": "Annuler",
+    "workout": "Entraînement"
 } 
