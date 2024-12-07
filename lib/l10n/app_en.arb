@@ -74,5 +74,11 @@
     "eventSummary": "Event Summary",
     "meals": "Meals",
     "workouts": "Workouts",
-    "weeklyActivity": "Weekly Activity"
+    "weeklyActivity": "Weekly Activity",
+    "mealSummary": "Meal Summary",
+    "workoutSummary": "Workout Summary",
+    "totalDuration": "Total Duration",
+    "totalCalories": "Total Calories",
+    "mealActivity": "Meal Activity (Last 7 days)",
+    "workoutActivity": "Workout Activity (Last 7 days)"
 } 

@@ -78,5 +78,11 @@
     "eventSummary": "Händelseöversikt",
     "meals": "Måltider",
     "workouts": "Träningspass",
-    "weeklyActivity": "Veckans aktivitet"
+    "weeklyActivity": "Veckans aktivitet",
+    "mealSummary": "Måltidsöversikt",
+    "workoutSummary": "Träningsöversikt",
+    "totalDuration": "Total tid",
+    "totalCalories": "Totala kalorier",
+    "mealActivity": "Måltidsaktivitet (Senaste 7 dagarna)",
+    "workoutActivity": "Träningsaktivitet (Senaste 7 dagarna)"
 } 
