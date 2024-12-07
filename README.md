@@ -1,16 +1,20 @@
-# my_event_tracker
+# My Event Tracker
 
-A new Flutter project.
+## Configuration du projet
 
-## Getting Started
+### Prérequis
+- Flutter SDK
+- watchexec (`brew install watchexec` sur macOS)
+- VS Code avec l'extension Flutter
 
-This project is a starting point for a Flutter application.
+### Installation
+1. Cloner le projet
+2. Installer les dépendances : `flutter pub get`
+3. Ouvrir le projet dans VS Code
 
-A few resources to get you started if this is your first Flutter project:
+La génération automatique des traductions se lance automatiquement à l'ouverture du projet dans VS Code. Les fichiers de traduction (`.arb`) dans `lib/l10n` seront surveillés et les fichiers de localisation seront régénérés à chaque modification.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Si la tâche ne se lance pas automatiquement :
+1. Cmd/Ctrl + Shift + P
+2. Taper "Tasks: Run Task"
+3. Sélectionner "Watch L10n"
