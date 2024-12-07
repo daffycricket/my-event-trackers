@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_event_tracker/data/static_food_data.dart';
+import 'package:my_event_tracker/extensions/unit_type_ui_extension.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
 import '../widgets/common_event_fields.dart';
 import '../models/food_item.dart';
-import 'package:flutter/services.dart';
 import '../data/food_suggestions.dart';
+import '../models/unit_type.dart';
 import '../widgets/food_tag.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,30 +26,56 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     with DateTimePickerMixin {
   final List<TextEditingController> _foodControllers = [];
   final List<TextEditingController> _quantityControllers = [];
+  final List<UnitType> _foodTypes = [];
   var _notesController = TextEditingController();
   late MealType _selectedType;
 
   @override
   void initState() {
     super.initState();
-    final meal = widget.mealToEdit;
-    if (meal != null) {
-      for (final food in meal.foods) {
+    
+    // Si on est en mode édition
+    if (widget.mealToEdit != null) {
+      final meal = widget.mealToEdit!;
+      _selectedType = meal.type;
+      _notesController.text = meal.notes ?? '';
+      selectedDateTime = meal.date;
+
+      // Initialiser les listes avec les aliments existants
+      for (var food in meal.foods) {
+        final staticFood = staticFoodSuggestions.firstWhere(
+          (f) => f.name == food.name,
+          orElse: () => StaticFood(
+            name: food.name,
+            category: FoodCategory.snacks,
+            unitType: UnitType.unit,
+          ),
+        );
+
         _foodControllers.add(TextEditingController(text: food.name));
-        _quantityControllers.add(TextEditingController(text: food.quantity.toString()));
+        _quantityControllers.add(TextEditingController(text: food.quantity.toInt().toString()));
+        _foodTypes.add(staticFood.unitType);
       }
+    } else {
+      _selectedType = MealType.snack;
+      selectedDateTime = DateTime.now();
     }
-    _notesController = TextEditingController(text: meal?.notes ?? '');
-    _selectedType = meal?.type ?? MealType.lunch;
-    selectedDateTime = meal?.date ?? DateTime.now();
   }
 
   void _removeFoodItem(int index) {
+    if (index < 0 || 
+        index >= _foodControllers.length || 
+        index >= _quantityControllers.length || 
+        index >= _foodTypes.length) {
+      return;
+    }
+
     setState(() {
       _foodControllers[index].dispose();
-      _quantityControllers[index].dispose();
       _foodControllers.removeAt(index);
+      _quantityControllers[index].dispose();
       _quantityControllers.removeAt(index);
+      _foodTypes.removeAt(index);
     });
   }
 
@@ -113,9 +141,22 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   void _addFoodItem(String foodName) {
     final l10n = AppLocalizations.of(context)!;
     final localizedFoodName = _getLocalizedFoodName(l10n, foodName);
+    
+    final food = staticFoodSuggestions.firstWhere(
+      (food) => food.name == foodName,
+      orElse: () => StaticFood(
+        name: foodName,
+        category: FoodCategory.snacks,
+        unitType: UnitType.unit,
+      ),
+    );
+
     setState(() {
       _foodControllers.add(TextEditingController(text: localizedFoodName));
-      _quantityControllers.add(TextEditingController(text: '1'));
+      _quantityControllers.add(
+        TextEditingController(text: food.defaultQuantity.toString())
+      );
+      _foodTypes.add(food.unitType);
     });
   }
 
@@ -212,31 +253,48 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _foodControllers.length,
-                itemBuilder: (context, index) => ListTile(
-                  title: Text(_foodControllers[index].text),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 60,
-                        child: TextField(
-                          controller: _quantityControllers[index],
-                          decoration: InputDecoration(
-                            labelText: l10n.quantity,
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                          ],
+                itemBuilder: (context, index) {
+                  if (index >= _foodControllers.length || 
+                      index >= _quantityControllers.length || 
+                      index >= _foodTypes.length) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return ListTile(
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(_foodControllers[index].text),
                         ),
+                        Text(
+                          _foodTypes[index].getSymbol(),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: SizedBox(
+                      width: 160,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          QuantityInput(
+                            unitType: _foodTypes[index],
+                            controller: _quantityControllers[index],
+                            onChanged: (value) {
+                              _quantityControllers[index].text = value;
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle_outline),
+                            onPressed: () => _removeFoodItem(index),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle_outline),
-                        onPressed: () => _removeFoodItem(index),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
               const Divider(),
               Text(
@@ -300,5 +358,36 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     }
     _notesController.dispose();
     super.dispose();
+  }
+}
+
+class QuantityInput extends StatelessWidget {
+  final UnitType unitType;
+  final TextEditingController controller;
+  final Function(String) onChanged;
+
+  const QuantityInput({
+    required this.unitType,
+    required this.controller,
+    required this.onChanged,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 100,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: unitType.getKeyboardType(),
+        decoration: InputDecoration(
+          labelText: 'Quantité',
+          suffixText: unitType.getSymbol(),
+          border: const OutlineInputBorder(),
+        ),
+        validator: unitType.validateQuantity,
+        onChanged: onChanged,
+      ),
+    );
   }
 } 

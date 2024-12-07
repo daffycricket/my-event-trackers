@@ -1,34 +1,34 @@
 P1 fonctionnel
 | Tâche | Statut |
 |-------|--------|
-| Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | todo |
-| Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | todo |
-| Implémenter l'authentification utilisateur (email/mot de passe) | todo |
-| Implémenter l'authentification utilisateur (email/mot de passe) | todo |
-| Implémenter la synchronisation des données hors-ligne | todo |
-| Implémenter la gestion des erreurs et les messages utilisateur | todo |
-| Implémenter in app purchase pour abonnement premium | todo |
-| Restreindre l'accès à certaines fonctionnalités : suivi des events sur plus de 1 mois + certains graphiques | todo |
-| Permettre l'ajout d'une photo à un événement | todo |
-| Implémenter la recherche et le filtrage des événements | todo |
-| Ajouter des graphiques statistiques interactifs | 17372a6 |
-| Mettre en place un système de notifications | todo |
-| Implémenter l'export des données au format CSV/PDF | todo |
-| Implémenter la gestion des fuseaux horaires | todo |
-| Ajouter la pagination des listes d'événements | todo |
+| Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | todo ||
+| Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | done | c1c1d1e |
+| Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
+| Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
+| Implémenter la synchronisation des données hors-ligne | todo ||
+| Implémenter la gestion des erreurs et les messages utilisateur | todo ||
+| Implémenter in app purchase pour abonnement premium | todo ||
+| Restreindre l'accès à certaines fonctionnalités : suivi des events sur plus de 1 mois + certains graphiques | todo ||
+| Permettre l'ajout d'une photo à un événement | todo ||
+| Implémenter la recherche et le filtrage des événements | todo ||
+| Ajouter des graphiques statistiques interactifs | done |17372a6|
+| Mettre en place un système de notifications | todo ||
+| Implémenter l'export des données au format CSV/PDF | todo ||
+| Implémenter la gestion des fuseaux horaires | todo ||
+| Ajouter la pagination des listes d'événements | todo ||
 
 P1 technique
 | Tâche | Statut |
 |-------|--------|
-| Installer Elasticsearch pour le monitoring | todo |
-| Dockeriser l'api pour déployer sur cloud run | todo |
-| Ajouter les tests d'intégration de l'API | todo |
-| Implémenter les endpoints manquants de l'API | todo |
-| Configurer le monitoring et les analytics | todo |
-| Mettre en place la validation des données avec Pydantic | todo |
-| Ajouter la validation des données côté client | todo |
-| Mettre en place des tests unitaires Flutter | todo |
-| Optimiser les performances de l'application | todo |
+| Installer Elasticsearch pour le monitoring | todo ||
+| Dockeriser l'api pour déployer sur cloud run | todo ||
+| Ajouter les tests d'intégration de l'API | todo ||
+| Implémenter les endpoints manquants de l'API | todo ||
+| Configurer le monitoring et les analytics | todo ||
+| Mettre en place la validation des données avec Pydantic | todo ||
+| Ajouter la validation des données côté client | todo ||
+| Mettre en place des tests unitaires Flutter | todo ||
+| Optimiser les performances de l'application | todo ||
 
 
 

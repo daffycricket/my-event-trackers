@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:my_event_tracker/data/food_suggestions.dart';
 import 'package:my_event_tracker/models/food_item.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:my_event_tracker/data/food_suggestions.dart';
+import 'package:my_event_tracker/data/static_food_data.dart';
+import 'package:my_event_tracker/models/unit_type.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
@@ -88,10 +91,23 @@ class _MealDetailScreenState extends ConsumerState<MealDetailScreen> {
                   itemBuilder: (context, index) {
                     final foodItem = updatedMeal.foods[index];
                     final foodName = _getLocalizedFoodName(l10n, foodItem.name);
+                    
+                    final staticFood = staticFoodSuggestions.firstWhere(
+                      (food) => food.name == foodItem.name,
+                      orElse: () => StaticFood(
+                        name: foodItem.name,
+                        category: FoodCategory.snacks,
+                        unitType: UnitType.unit,
+                      ),
+                    );
+
                     return ListTile(
                       leading: const Icon(Icons.food_bank),
                       title: Text(foodName),
-                      trailing: Text(foodItem.quantity.toString()),
+                      trailing: Text(
+                        '${foodItem.quantity.toInt()} ${staticFood.unitType.getSymbol()}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                     );
                   },
                 ),
