@@ -90,11 +90,19 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
               ),
             ),
             Wrap(
-              children: foods.map((food) => FoodTag(
-                name: food.getName(context),
-                color: food.category.color,
-                onTap: () => _addFoodItem(food.getName(context)),
-              )).toList(),
+              children: foods.map((food) {
+                final foodName = food.getName(context);
+                final isSelected = _foodControllers.any(
+                  (controller) => controller.text == foodName
+                );
+                
+                return FoodTag(
+                  name: foodName,
+                  color: food.category.color,
+                  onTap: isSelected ? null : () => _addFoodItem(foodName),
+                  isSelected: isSelected,
+                );
+              }).toList(),
             ),
           ],
         );

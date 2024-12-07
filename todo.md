@@ -1,6 +1,8 @@
 P1 fonctionnel
 | Tâche | Statut |
 |-------|--------|
+| Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | todo |
+| Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | todo |
 | Implémenter l'authentification utilisateur (email/mot de passe) | todo |
 | Implémenter l'authentification utilisateur (email/mot de passe) | todo |
 | Implémenter la synchronisation des données hors-ligne | todo |
@@ -9,7 +11,7 @@ P1 fonctionnel
 | Restreindre l'accès à certaines fonctionnalités : suivi des events sur plus de 1 mois + certains graphiques | todo |
 | Permettre l'ajout d'une photo à un événement | todo |
 | Implémenter la recherche et le filtrage des événements | todo |
-| Ajouter des graphiques statistiques interactifs | todo |
+| Ajouter des graphiques statistiques interactifs | 17372a6 |
 | Mettre en place un système de notifications | todo |
 | Implémenter l'export des données au format CSV/PDF | todo |
 | Implémenter la gestion des fuseaux horaires | todo |
