@@ -72,5 +72,11 @@
     "delete": "Radera",
     "cancel": "Avbryt",
     "eventDeleted": "Händelse raderad",
-    "undo": "Ångra"
+    "undo": "Ångra",
+
+    "statistics": "Statistik",
+    "eventSummary": "Händelseöversikt",
+    "meals": "Måltider",
+    "workouts": "Träningspass",
+    "weeklyActivity": "Veckans aktivitet"
 } 

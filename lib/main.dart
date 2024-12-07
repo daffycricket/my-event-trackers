@@ -6,10 +6,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_event_tracker/models/event.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import 'package:my_event_tracker/screens/create_workout_screen.dart';
+import 'package:my_event_tracker/screens/statistics_screen.dart';
 import 'package:my_event_tracker/widgets/event_list_item.dart';
 import 'providers/events_provider.dart';
-import 'screens/meal_detail_screen.dart';
-import 'screens/workout_detail_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -63,6 +62,19 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appTitle),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StatisticsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: const EventList(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

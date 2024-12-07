@@ -69,5 +69,10 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "eventDeleted": "Event deleted",
-    "undo": "Undo"
+    "undo": "Undo",
+    "statistics": "Statistics",
+    "eventSummary": "Event Summary",
+    "meals": "Meals",
+    "workouts": "Workouts",
+    "weeklyActivity": "Weekly Activity"
 } 

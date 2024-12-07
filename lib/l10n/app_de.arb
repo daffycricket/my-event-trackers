@@ -69,5 +69,10 @@
     "delete": "Löschen",
     "cancel": "Abbrechen",
     "eventDeleted": "Ereignis gelöscht",
-    "undo": "Rückgängig"
+    "undo": "Rückgängig",
+    "statistics": "Statistiken",
+    "eventSummary": "Ereigniszusammenfassung",
+    "meals": "Mahlzeiten",
+    "workouts": "Trainingseinheiten",
+    "weeklyActivity": "Wöchentliche Aktivität"
 } 

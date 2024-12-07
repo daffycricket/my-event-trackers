@@ -71,5 +71,10 @@
     "cancel": "Annuler",
     "eventDeleted": "Événement supprimé",
     "undo": "Annuler",
-    "workout": "Entraînement"
+    "workout": "Entraînement",
+    "statistics": "Statistiques",
+    "eventSummary": "Résumé des événements",
+    "meals": "Repas",
+    "workouts": "Entraînements",
+    "weeklyActivity": "Activité hebdomadaire"
 } 
