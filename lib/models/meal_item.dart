@@ -1,8 +1,8 @@
-class FoodItem {
+class MealItem {
   final String name;
   final num quantity;
 
-  const FoodItem({
+  const MealItem({
     required this.name,
     required this.quantity,
   });
@@ -13,7 +13,7 @@ class FoodItem {
     'quantity': quantity,
   };
 
-  factory FoodItem.fromJson(Map<String, dynamic> json) => FoodItem(
+  factory MealItem.fromJson(Map<String, dynamic> json) => MealItem(
     name: json['name'],
     quantity: json['quantity'],
   );

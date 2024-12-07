@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:my_event_tracker/data/food_suggestions.dart';
 import 'package:my_event_tracker/data/static_food_data.dart';
+import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
 import '../models/event.dart';

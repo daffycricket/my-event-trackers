@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:my_event_tracker/data/food_suggestions.dart';
-import 'package:my_event_tracker/models/food_item.dart';
+import 'package:my_event_tracker/models/food_category.dart';
+import 'package:my_event_tracker/models/meal_item.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../data/static_food_data.dart';
@@ -94,7 +94,7 @@ class RandomDataGenerator {
     }
 
     final numberOfFoods = _random.nextInt(maxFoods - minFoods + 1) + minFoods;
-    final foods = <FoodItem>[];
+    final foods = <MealItem>[];
     final availableFoods = List<StaticFood>.from(staticFoodSuggestions);
     
     // Sélectionner des aliments appropriés selon le type de repas
@@ -114,7 +114,7 @@ class RandomDataGenerator {
         selectedFood = availableFoods[_random.nextInt(availableFoods.length)];
       }
       
-      foods.add(FoodItem(
+      foods.add(MealItem(
         name: selectedFood.name,
         quantity: _random.nextInt(3) + 1,
       ));

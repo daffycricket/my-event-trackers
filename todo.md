@@ -1,9 +1,9 @@
 P1 fonctionnel
 | Tâche | Statut |
 |-------|--------|
-| Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | todo ||
+| Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | done | b4ac311 |
 | Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | done | c1c1d1e |
-| Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
+| Récupérer le référentiel de foods depuis l'API | todo ||
 | Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
 | Implémenter la synchronisation des données hors-ligne | todo ||
 | Implémenter la gestion des erreurs et les messages utilisateur | todo ||
@@ -16,6 +16,7 @@ P1 fonctionnel
 | Implémenter l'export des données au format CSV/PDF | todo ||
 | Implémenter la gestion des fuseaux horaires | todo ||
 | Ajouter la pagination des listes d'événements | todo ||
+
 
 P1 technique
 | Tâche | Statut |

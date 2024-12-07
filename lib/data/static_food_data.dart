@@ -1,4 +1,4 @@
-import 'package:my_event_tracker/data/food_suggestions.dart';
+import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 
 class StaticFood {

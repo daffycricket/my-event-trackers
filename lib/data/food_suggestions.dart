@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_event_tracker/models/food_category.dart';
 
-enum FoodCategory {
-  fruits,
-  vegetables,
-  proteins,
-  carbs,
-  dairy,
-  drinks,
-  snacks
-}
 
 extension FoodCategoryExtension on FoodCategory {
   String getName(BuildContext context) {
@@ -52,11 +44,11 @@ extension FoodCategoryExtension on FoodCategory {
   }
 }
 
-class CategoryFood {
+class FoodItem {
   final String Function(BuildContext) nameGetter;
   final FoodCategory category;
 
-  CategoryFood({
+  FoodItem({
     required this.nameGetter,
     required this.category,
   });
@@ -64,97 +56,97 @@ class CategoryFood {
   String getName(BuildContext context) => nameGetter(context);
 }
 
-List<CategoryFood> getFoodSuggestions(BuildContext context) {
+List<FoodItem> getFoodSuggestions(BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   return [
     // Fruits
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodApple,
       category: FoodCategory.fruits,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodBanana,
       category: FoodCategory.fruits,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodOrange,
       category: FoodCategory.fruits,
     ),
     // Légumes
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodCarrot,
       category: FoodCategory.vegetables,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodTomato,
       category: FoodCategory.vegetables,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodCucumber,
       category: FoodCategory.vegetables,
     ),
     // Protéines
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodChicken,
       category: FoodCategory.proteins,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodBeef,
       category: FoodCategory.proteins,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodFish,
       category: FoodCategory.proteins,
     ),
     // Féculents
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodRice,
       category: FoodCategory.carbs,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodPasta,
       category: FoodCategory.carbs,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodBread,
       category: FoodCategory.carbs,
     ),
     // Produits laitiers
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodMilk,
       category: FoodCategory.dairy,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodYogurt,
       category: FoodCategory.dairy,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodCheese,
       category: FoodCategory.dairy,
     ),
     // Boissons
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodWater,
       category: FoodCategory.drinks,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodCoffee,
       category: FoodCategory.drinks,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodTea,
       category: FoodCategory.drinks,
     ),
     // Snacks
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodCookies,
       category: FoodCategory.snacks,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodChips,
       category: FoodCategory.snacks,
     ),
-    CategoryFood(
+    FoodItem(
       nameGetter: (context) => l10n.foodNuts,
       category: FoodCategory.snacks,
     ),

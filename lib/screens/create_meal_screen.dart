@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_event_tracker/data/static_food_data.dart';
 import 'package:my_event_tracker/extensions/unit_type_ui_extension.dart';
+import 'package:my_event_tracker/models/food_category.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
 import '../widgets/common_event_fields.dart';
-import '../models/food_item.dart';
+import '../models/meal_item.dart';
 import '../data/food_suggestions.dart';
 import '../models/unit_type.dart';
 import '../widgets/food_tag.dart';
@@ -94,7 +95,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   }
 
   Widget _buildSuggestions(BuildContext context) {
-    final groupedSuggestions = <FoodCategory, List<CategoryFood>>{};
+    final groupedSuggestions = <FoodCategory, List<FoodItem>>{};
     final suggestions = getFoodSuggestions(context);
     
     for (var food in suggestions) {
@@ -318,12 +319,12 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   }
 
   void _saveMeal() {
-    final foods = <FoodItem>[];
+    final foods = <MealItem>[];
     for (var i = 0; i < _foodControllers.length; i++) {
       if (_foodControllers[i].text.isNotEmpty && _quantityControllers[i].text.isNotEmpty) {
         final quantity = num.tryParse(_quantityControllers[i].text);
         if (quantity != null) {
-          foods.add(FoodItem(
+          foods.add(MealItem(
             name: _foodControllers[i].text,
             quantity: quantity,
           ));
