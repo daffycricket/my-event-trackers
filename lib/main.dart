@@ -11,30 +11,39 @@ import 'package:my_event_tracker/widgets/event_list_item.dart';
 import 'providers/events_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'providers/config_provider.dart';
 
-void main() {
-  // Configuration du logger
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser le logging
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
-    if (record.error != null) {
-      debugPrint('Error: ${record.error}');
-    }
-    if (record.stackTrace != null) {
-      debugPrint('Stack trace:\n${record.stackTrace}');
-    }
   });
 
-  initializeDateFormatting();
-  runApp(const ProviderScope(child: MyApp()));
+  // Initialiser les formats de date
+  await initializeDateFormatting();
+
+  // Précharger les configurations
+  final container = ProviderContainer();
+  await container.read(foodReferencesProvider.future);
+
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      navigatorKey: ref.watch(navigatorKeyProvider),
       locale: Locale('fr', ''),
       localizationsDelegates: [
         AppLocalizations.delegate,

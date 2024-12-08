@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_event_tracker/data/static_food_data.dart';
 import 'package:my_event_tracker/extensions/unit_type_ui_extension.dart';
 import 'package:my_event_tracker/models/food_category.dart';
+import 'package:my_event_tracker/models/food_reference.dart';
+import 'package:my_event_tracker/providers/config_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
@@ -139,13 +141,12 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     );
   }
 
-  void _addFoodItem(String foodName) {
-    final l10n = AppLocalizations.of(context)!;
-    final localizedFoodName = _getLocalizedFoodName(l10n, foodName);
-    
-    final food = staticFoodSuggestions.firstWhere(
+  void _addFoodItem(String foodName) async {
+    final foodReferences = await ref.read(foodReferencesProvider.future);
+    final foodRef = foodReferences.firstWhere(
       (food) => food.name == foodName,
-      orElse: () => StaticFood(
+      orElse: () => FoodReference(
+        id: foodName.toLowerCase().replaceAll(' ', '_'),
         name: foodName,
         category: FoodCategory.snacks,
         unitType: UnitType.unit,
@@ -153,11 +154,11 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     );
 
     setState(() {
-      _foodControllers.add(TextEditingController(text: localizedFoodName));
+      _foodControllers.add(TextEditingController(text: foodRef.name));
       _quantityControllers.add(
-        TextEditingController(text: food.defaultQuantity.toString())
+        TextEditingController(text: foodRef.defaultQuantity.toString())
       );
-      _foodTypes.add(food.unitType);
+      _foodTypes.add(foodRef.unitType);
     });
   }
 

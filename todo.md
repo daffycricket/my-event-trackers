@@ -4,6 +4,7 @@ P1 fonctionnel
 | Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | done | b4ac311 |
 | Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | done | c1c1d1e |
 | Récupérer le référentiel de foods depuis l'API | todo ||
+| Creer le referentiel de foods localisé sur la bdd de l'api | todo ||
 | Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
 | Implémenter la synchronisation des données hors-ligne | todo ||
 | Implémenter la gestion des erreurs et les messages utilisateur | todo ||
@@ -16,6 +17,7 @@ P1 fonctionnel
 | Implémenter l'export des données au format CSV/PDF | todo ||
 | Implémenter la gestion des fuseaux horaires | todo ||
 | Ajouter la pagination des listes d'événements | todo ||
+
 
 
 P1 technique
@@ -67,6 +69,8 @@ P2
 
 | Endpoint | Description | Payload & Réponse |
 |----------|-------------|-------------------|
+| **Configuration** |
+| GET /api/v1/config/foods | Liste des aliments de référence | Query: `?language=fr` <br>Response: ```json [{ "id": "tomato", "name": "Tomate", "category": "VEGETABLES", "unit_type": "UNIT", "default_quantity": 1 }, ...] ``` |
 | **Authentification** |
 | POST /api/auth/register | Inscription d'un nouvel utilisateur | Request: ```json { "email": "user@example.com", "password": "secret", "name": "John Doe" }``` <br>Response: ```json { "token": "jwt_token", "user": { "id": 1, "email": "user@example.com", "name": "John Doe" } }``` |
 | POST /api/auth/login | Connexion utilisateur | Request: ```json { "email": "user@example.com", "password": "secret" }``` <br>Response: ```json { "token": "jwt_token" }``` |
@@ -101,3 +105,4 @@ P2
 - La pagination utilise les paramètres `page` et `per_page`
 - Les réponses d'erreur suivent le format : ```json { "error": "message", "code": "ERROR_CODE" }```
 - Les listes paginées retournent toujours : ```json { "items": [...], "total": n, "page": x, "per_page": y }```
+- Le paramètre `language` accepte les codes ISO 639-1 (ex: 'fr', 'en', 'de')

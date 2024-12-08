@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/event.dart';
-import '../services/api_service.dart';
+import '../services/event_service.dart';
 
-final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
+final apiServiceProvider = Provider<EventService>((ref) => EventService());
 
 final eventsProvider = StateNotifierProvider<EventsNotifier, List<Event>>((ref) {
   final apiService = ref.watch(apiServiceProvider);
@@ -10,7 +10,7 @@ final eventsProvider = StateNotifierProvider<EventsNotifier, List<Event>>((ref) 
 });
 
 class EventsNotifier extends StateNotifier<List<Event>> {
-  final ApiService _apiService;
+  final EventService _apiService;
 
   EventsNotifier(this._apiService) : super([]) {
     loadEvents();
