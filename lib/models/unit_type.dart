@@ -2,7 +2,8 @@ enum UnitType {
   unit,     // unité (ex: 1 pomme)
   weight,   // grammes
   volume,   // centilitres
-  serving;  // portion
+  serving,  // portion
+  spoon;    // cuillère à soupe
 
   String getSymbol() {
     switch (this) {
@@ -14,6 +15,8 @@ enum UnitType {
         return 'cl';
       case UnitType.serving:
         return 'portion';
+      case UnitType.spoon:
+        return 'cuillère à soupe';
     }
   }
 

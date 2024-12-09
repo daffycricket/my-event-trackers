@@ -3,7 +3,7 @@ P1 fonctionnel
 |-------|--------|
 | Paramétrer le référentiel de foods pour qu'une unité soit définie par food : nombre d'unité, poids, volume, etc. | done | b4ac311 |
 | Bug : à la création d'un repas, si j'ajoute plusieurs fois le même aliment, il n'est pas marqué comme sélectionné | done | c1c1d1e |
-| Récupérer le référentiel de foods depuis l'API | todo ||
+| Récupérer le référentiel de foods depuis l'API | todo | f13a793 |
 | Creer le referentiel de foods localisé sur la bdd de l'api | todo ||
 | Implémenter l'authentification utilisateur (email/mot de passe) | todo ||
 | Implémenter la synchronisation des données hors-ligne | todo ||
