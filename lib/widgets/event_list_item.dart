@@ -88,14 +88,17 @@ class EventListItem extends ConsumerWidget {
     );
   }
 
-  String _getEventTitle(Event event, BuildContext context) {
-    if (event is MealEvent) {
-      return AppLocalizations.of(context)!.meal;
-    } else if (event is WorkoutEvent) {
-      return AppLocalizations.of(context)!.workout;
-    }
-    return '';
+String _getEventTitle(Event event, BuildContext context) {
+  final localizations = AppLocalizations.of(context);
+  if (localizations == null) return ''; // Gestion du cas où les localisations ne sont pas disponibles
+  
+  if (event is MealEvent) {
+    return localizations.meal;
+  } else if (event is WorkoutEvent) {
+    return localizations.workout;
   }
+  return '';
+}
 
   Widget _buildSubtitle(Event event, BuildContext context) {
     if (event is MealEvent) {

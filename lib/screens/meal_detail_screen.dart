@@ -90,18 +90,19 @@ class MealDetailScreen extends ConsumerWidget {
                         final foodRef = foodReferences.firstWhere(
                           (ref) => ref.name == foodItem.name,
                           orElse: () => FoodReference(
-                            id: foodItem.name.toLowerCase().replaceAll(' ', '_'),
-                            name: foodItem.name,
+                            name: foodItem.name.toLowerCase().replaceAll(' ', '_'),
+                            label: foodItem.name,
                             category: FoodCategory.snacks,
                             unitType: UnitType.unit,
+                            defaultQuantity: 1.0,
                           ),
                         );
 
                         return ListTile(
                           leading: const Icon(Icons.food_bank),
-                          title: Text(foodRef.name),
+                          title: Text(foodRef.label),
                           trailing: Text(
-                            '${foodItem.quantity.toInt()} ${foodRef.unitType.getSymbol()}',
+                            '${foodItem.quantity} ${foodRef.unitType.getSymbol()}',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         );

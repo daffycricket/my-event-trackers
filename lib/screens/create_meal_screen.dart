@@ -27,9 +27,7 @@ class CreateMealScreen extends ConsumerStatefulWidget {
 
 class _CreateMealScreenState extends ConsumerState<CreateMealScreen> 
     with DateTimePickerMixin {
-  final List<TextEditingController> _foodControllers = [];
-  final List<TextEditingController> _quantityControllers = [];
-  final List<UnitType> _foodTypes = [];
+  final List<FoodItemData> _foodItems = [];
   var _notesController = TextEditingController();
   late MealType _selectedType;
 
@@ -37,27 +35,20 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   void initState() {
     super.initState();
     
-    // Si on est en mode édition
     if (widget.mealToEdit != null) {
       final meal = widget.mealToEdit!;
       _selectedType = meal.type;
       _notesController.text = meal.notes ?? '';
       selectedDateTime = meal.date;
 
-      // Initialiser les listes avec les aliments existants
+      // Initialiser les aliments existants
       for (var food in meal.foods) {
-        final staticFood = staticFoodSuggestions.firstWhere(
-          (f) => f.name == food.name,
-          orElse: () => StaticFood(
-            name: food.name,
-            category: FoodCategory.snacks,
-            unitType: UnitType.unit,
-          ),
-        );
-
-        _foodControllers.add(TextEditingController(text: food.name));
-        _quantityControllers.add(TextEditingController(text: food.quantity.toInt().toString()));
-        _foodTypes.add(staticFood.unitType);
+        _foodItems.add(FoodItemData(
+          id: food.name,
+          label: food.name,
+          quantityController: TextEditingController(text: food.quantity.toString()),
+          unitType: UnitType.unit,
+        ));
       }
     } else {
       _selectedType = MealType.snack;
@@ -66,19 +57,11 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   }
 
   void _removeFoodItem(int index) {
-    if (index < 0 || 
-        index >= _foodControllers.length || 
-        index >= _quantityControllers.length || 
-        index >= _foodTypes.length) {
-      return;
-    }
+    if (index < 0 || index >= _foodItems.length) return;
 
     setState(() {
-      _foodControllers[index].dispose();
-      _foodControllers.removeAt(index);
-      _quantityControllers[index].dispose();
-      _quantityControllers.removeAt(index);
-      _foodTypes.removeAt(index);
+      _foodItems[index].quantityController.dispose();
+      _foodItems.removeAt(index);
     });
   }
 
@@ -123,8 +106,8 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
             Wrap(
               children: foods.map((food) {
                 final foodName = food.getName(context);
-                final isSelected = _foodControllers.any(
-                  (controller) => controller.text == foodName
+                final isSelected = _foodItems.any(
+                  (item) => item.label == foodName
                 );
                 
                 return FoodTag(
@@ -146,19 +129,21 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     final foodRef = foodReferences.firstWhere(
       (food) => food.name == foodName,
       orElse: () => FoodReference(
-        id: foodName.toLowerCase().replaceAll(' ', '_'),
-        name: foodName,
+        name: foodName.toLowerCase().replaceAll(' ', '_'),
+        label: foodName,
         category: FoodCategory.snacks,
         unitType: UnitType.unit,
+        defaultQuantity: 1.0,
       ),
     );
 
     setState(() {
-      _foodControllers.add(TextEditingController(text: foodRef.name));
-      _quantityControllers.add(
-        TextEditingController(text: foodRef.defaultQuantity.toString())
-      );
-      _foodTypes.add(foodRef.unitType);
+      _foodItems.add(FoodItemData(
+        id: foodRef.name,
+        label: foodRef.label,
+        quantityController: TextEditingController(text: foodRef.defaultQuantity.toString()),
+        unitType: foodRef.unitType,
+      ));
     });
   }
 
@@ -254,22 +239,17 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _foodControllers.length,
+                itemCount: _foodItems.length,
                 itemBuilder: (context, index) {
-                  if (index >= _foodControllers.length || 
-                      index >= _quantityControllers.length || 
-                      index >= _foodTypes.length) {
-                    return const SizedBox.shrink();
-                  }
-
+                  final item = _foodItems[index];
                   return ListTile(
                     title: Row(
                       children: [
                         Expanded(
-                          child: Text(_foodControllers[index].text),
+                          child: Text(item.label),
                         ),
                         Text(
-                          _foodTypes[index].getSymbol(),
+                          item.unitType.getSymbol(),
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -282,10 +262,10 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           QuantityInput(
-                            unitType: _foodTypes[index],
-                            controller: _quantityControllers[index],
+                            unitType: item.unitType,
+                            controller: item.quantityController,
                             onChanged: (value) {
-                              _quantityControllers[index].text = value;
+                              item.quantityController.text = value;
                             },
                           ),
                           IconButton(
@@ -321,12 +301,12 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
 
   void _saveMeal() {
     final foods = <MealItem>[];
-    for (var i = 0; i < _foodControllers.length; i++) {
-      if (_foodControllers[i].text.isNotEmpty && _quantityControllers[i].text.isNotEmpty) {
-        final quantity = num.tryParse(_quantityControllers[i].text);
+    for (var item in _foodItems) {
+      if (item.quantityController.text.isNotEmpty) {
+        final quantity = num.tryParse(item.quantityController.text);
         if (quantity != null) {
           foods.add(MealItem(
-            name: _foodControllers[i].text,
+            name: item.id,
             quantity: quantity,
           ));
         }
@@ -352,11 +332,8 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
 
   @override
   void dispose() {
-    for (var controller in _foodControllers) {
-      controller.dispose();
-    }
-    for (var controller in _quantityControllers) {
-      controller.dispose();
+    for (var item in _foodItems) {
+      item.quantityController.dispose();
     }
     _notesController.dispose();
     super.dispose();
@@ -392,4 +369,18 @@ class QuantityInput extends StatelessWidget {
       ),
     );
   }
+}
+
+class FoodItemData {
+  final String id;
+  final String label;
+  final TextEditingController quantityController;
+  final UnitType unitType;
+
+  FoodItemData({
+    required this.id,
+    required this.label,
+    required this.quantityController,
+    required this.unitType,
+  });
 } 

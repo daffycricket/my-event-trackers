@@ -2,35 +2,42 @@ import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 
 class FoodReference {
-  final String id;
   final String name;
+  final String label;
   final FoodCategory category;
   final UnitType unitType;
-  final int defaultQuantity;
+  final double defaultQuantity;
 
   const FoodReference({
-    required this.id,
     required this.name,
+    required this.label,
     required this.category,
     required this.unitType,
-    this.defaultQuantity = 1,
+    required this.defaultQuantity,
   });
 
   factory FoodReference.fromJson(Map<String, dynamic> json) {
-    return FoodReference(
-      id: json['id'],
-      name: json['name'],
-      category: FoodCategory.values.byName(json['category']),
-      unitType: UnitType.values.byName(json['unit_type']),
-      defaultQuantity: json['default_quantity'] ?? 1,
-    );
+    try {
+      return FoodReference(
+        name: json['name'],
+        label: json['label'],
+        category: FoodCategory.values.byName(json['category']),
+        unitType: UnitType.values.byName(json['unit_type']),
+        defaultQuantity: json['default_quantity'].toDouble(),
+      );
+    } catch (e) {
+      print('Error parsing JSON: ${json.toString()}');
+      print('Category value: ${json['category']}');
+      print('UnitType value: ${json['unit_type']}');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
     'name': name,
-    'category': category.name,
-    'unit_type': unitType.name,
+    'label': label,
+    'category': category.name.toLowerCase(),
+    'unit_type': unitType.name.toLowerCase(),
     'default_quantity': defaultQuantity,
   };
 } 

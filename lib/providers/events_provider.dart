@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/event.dart';
 import '../services/event_service.dart';
 
-final apiServiceProvider = Provider<EventService>((ref) => EventService());
+final apiServiceProvider = Provider<EventService>((ref) => EventService(ref));
 
 final eventsProvider = StateNotifierProvider<EventsNotifier, List<Event>>((ref) {
   final apiService = ref.watch(apiServiceProvider);

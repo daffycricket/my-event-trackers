@@ -45,24 +45,47 @@ class MealEvent extends Event {
 
   @override
   Map<String, dynamic> _dataToJson() => {
-    'foods': foods.map((food) => food.toJson()).toList(),
+    'meal_items': foods.map((food) => {
+      'food_id': food.name,
+      'quantity': food.quantity,
+    }).toList(),
     'type': type.name,
   };
 
   factory MealEvent.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>;
-    final mealItems = json['meal_items'] as List<dynamic>;
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+    final mealItems = (data['meal_items'] as List<dynamic>? ?? []).map((item) => 
+      MealItem(
+        name: item['food_id'].toString(),
+        quantity: (item['quantity'] as num).toDouble(),
+      )
+    ).toList();
     
     return MealEvent(
-      id: json['id'],
+      id: json['id'].toString(),
       date: DateTime.parse(json['date']),
       notes: json['notes'],
-      foods: mealItems.map((item) => MealItem.fromJson(item)).toList(),
+      foods: mealItems,
       type: MealType.values.firstWhere(
-        (e) => e.name == data['type'],
-        orElse: () => MealType.snack, // valeur par défaut
+        (e) => e.name == (data['type'] ?? 'snack'),
+        orElse: () => MealType.snack,
       ),
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final baseJson = {
+      'type': 'MEAL',
+      'date': date.toIso8601String(),
+      'notes': notes,
+      'meal_items': foods.map((food) => {
+        'name': food.name,
+        'quantity': food.quantity,
+      }).toList(),
+    };
+    
+    return baseJson;
   }
 }
 

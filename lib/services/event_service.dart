@@ -2,14 +2,28 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:my_event_tracker/services/base_service.dart';
 import '../models/event.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_event_tracker/providers/auth_provider.dart';
 
 class EventService extends BaseService {
-  EventService() : super('EventService');
+  final Ref _ref;
+  
+  EventService(this._ref) : super('EventService');
 
   Future<List<Event>> getEvents() async {
     try {
-      logInfo('Fetching events from ${BaseService.baseUrl}/events/');
-      final response = await http.get(Uri.parse('${BaseService.baseUrl}/events/'));
+      final token = _ref.read(authStateProvider);
+      if (token == null) {
+        throw Exception('Not authenticated');
+      }
+
+      logInfo('Fetching events from ${BaseService.baseUrl}/api/events/');
+      final response = await http.get(
+        Uri.parse('${BaseService.baseUrl}/api/events/'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
       
       logInfo('Response status: ${response.statusCode}');
       logFine('Response body: ${response.body}');
@@ -42,12 +56,15 @@ class EventService extends BaseService {
   Future<Event> createEvent(Event event) async {
     try {
       final jsonData = event.toJson();
-      logInfo('Creating event at ${BaseService.baseUrl}/events/');
+      logInfo('Creating event at ${BaseService.baseUrl}/api/events');
       logInfo('Request payload:\n${const JsonEncoder.withIndent('  ').convert(jsonData)}');
 
       final response = await http.post(
-        Uri.parse('${BaseService.baseUrl}/events/'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('${BaseService.baseUrl}/api/events'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${_ref.read(authStateProvider)}',
+        },
         body: json.encode(jsonData),
       );
       
@@ -69,7 +86,7 @@ class EventService extends BaseService {
 
   Future<Event> updateEvent(String id, Event event) async {
     final response = await http.put(
-      Uri.parse('${BaseService.baseUrl}/events/$id'),
+      Uri.parse('${BaseService.baseUrl}/api/events/$id'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(event.toJson()),
     );
@@ -82,7 +99,7 @@ class EventService extends BaseService {
   }
 
   Future<void> deleteEvent(String id) async {
-    final response = await http.delete(Uri.parse('${BaseService.baseUrl}/events/$id'));
+    final response = await http.delete(Uri.parse('${BaseService.baseUrl}/api/events/$id'));
     
     if (response.statusCode != 200) {
       throw Exception('Failed to delete event');
