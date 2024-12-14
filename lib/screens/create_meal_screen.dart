@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_event_tracker/data/static_food_data.dart';
 import 'package:my_event_tracker/extensions/unit_type_ui_extension.dart';
 import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/food_reference.dart';
 import 'package:my_event_tracker/providers/config_provider.dart';
-import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
@@ -15,6 +13,7 @@ import '../data/food_suggestions.dart';
 import '../models/unit_type.dart';
 import '../widgets/food_tag.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:math';
 
 class CreateMealScreen extends ConsumerStatefulWidget {
   final MealEvent? mealToEdit;
@@ -28,8 +27,9 @@ class CreateMealScreen extends ConsumerStatefulWidget {
 class _CreateMealScreenState extends ConsumerState<CreateMealScreen> 
     with DateTimePickerMixin {
   final List<FoodItemData> _foodItems = [];
-  var _notesController = TextEditingController();
+  final _notesController = TextEditingController();
   late MealType _selectedType;
+  final _random = Random();
 
   @override
   void initState() {
@@ -147,61 +147,6 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     });
   }
 
-  String _getLocalizedFoodName(AppLocalizations l10n, String foodName) {
-    switch (foodName) {
-      // Fruits
-      case 'Apple':
-        return l10n.foodApple;
-      case 'Banana':
-        return l10n.foodBanana;
-      case 'Orange':
-        return l10n.foodOrange;
-      // Légumes
-      case 'Carrot':
-        return l10n.foodCarrot;
-      case 'Tomato':
-        return l10n.foodTomato;
-      case 'Cucumber':
-        return l10n.foodCucumber;
-      // Protéines
-      case 'Chicken':
-        return l10n.foodChicken;
-      case 'Beef':
-        return l10n.foodBeef;
-      case 'Fish':
-        return l10n.foodFish;
-      // Féculents
-      case 'Rice':
-        return l10n.foodRice;
-      case 'Pasta':
-        return l10n.foodPasta;
-      case 'Bread':
-        return l10n.foodBread;
-      // Produits laitiers
-      case 'Milk':
-        return l10n.foodMilk;
-      case 'Yogurt':
-        return l10n.foodYogurt;
-      case 'Cheese':
-        return l10n.foodCheese;
-      // Boissons
-      case 'Water':
-        return l10n.foodWater;
-      case 'Coffee':
-        return l10n.foodCoffee;
-      case 'Tea':
-        return l10n.foodTea;
-      // Snacks
-      case 'Cookies':
-        return l10n.foodCookies;
-      case 'Chips':
-        return l10n.foodChips;
-      case 'Nuts':
-        return l10n.foodNuts;
-      default:
-        return foodName;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +259,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     }
 
     final meal = MealEvent(
-      id: widget.mealToEdit?.id ?? const Uuid().v4(),
+      id: widget.mealToEdit?.id ?? _random.nextInt(1000000),
       date: selectedDateTime,
       type: _selectedType,
       foods: foods,

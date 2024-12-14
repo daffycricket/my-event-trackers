@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:math';
 
 class CreateWorkoutScreen extends ConsumerStatefulWidget {
   final WorkoutEvent? workoutToEdit;
@@ -23,6 +23,7 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
   var _caloriesController = TextEditingController();
   var _notesController = TextEditingController();
   late WorkoutType _selectedType;
+  final _random = Random();
 
   @override
   void initState() {
@@ -81,7 +82,10 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
               title: Text(
                 DateFormat('dd/MM/yyyy HH:mm').format(selectedDateTime),
               ),
-              onTap: () => selectDateTime(context),
+              onTap: () async {
+                await selectDateTime(context);
+                setState(() {});
+              },
             ),
             const SizedBox(height: 24),
 
@@ -138,7 +142,7 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
               child: ElevatedButton(
                 onPressed: _saveWorkout,
                 child: Text(
-                  l10n.update,
+                  widget.workoutToEdit != null ? l10n.update : l10n.save,
                 ),
               ),
             ),
@@ -165,7 +169,7 @@ class _CreateWorkoutScreenState extends ConsumerState<CreateWorkoutScreen>
     }
 
     final workout = WorkoutEvent(
-      id: widget.workoutToEdit?.id ?? const Uuid().v4(),
+      id: widget.workoutToEdit?.id ?? _random.nextInt(1000000),
       date: selectedDateTime,
       type: _selectedType,
       duration: Duration(minutes: int.parse(_durationController.text)),

@@ -10,7 +10,7 @@
     "dinner": "Middag",
     "snack": "Mellanmål",
     "cardio": "Kondition",
-    "strength": "Styrka",
+    "strength": "Styrketräning",
     "flexibility": "Rörlighet",
     "sport": "Sport",
     "editMeal": "Redigera måltid",
@@ -84,5 +84,9 @@
     "totalDuration": "Total tid",
     "totalCalories": "Totala kalorier",
     "mealActivity": "Måltidsaktivitet (Senaste 7 dagarna)",
-    "workoutActivity": "Träningsaktivitet (Senaste 7 dagarna)"
+    "workoutActivity": "Träningsaktivitet (Senaste 7 dagarna)",
+    "running": "Löpning",
+    "cycling": "Cykling",
+    "fitness": "Fitness",
+    "deleteEventError": "Fel vid borttagning av händelsen"
 } 

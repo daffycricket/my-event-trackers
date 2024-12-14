@@ -43,7 +43,7 @@ class EventsNotifier extends StateNotifier<List<Event>> {
     }
   }
 
-  Future<void> deleteEvent(String id) async {
+  Future<void> deleteEvent(int id) async {
     try {
       await _apiService.deleteEvent(id);
       state = state.where((e) => e.id != id).toList();

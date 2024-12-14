@@ -1,5 +1,6 @@
 import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
+import 'dart:developer';
 
 class FoodReference {
   final String name;
@@ -26,9 +27,9 @@ class FoodReference {
         defaultQuantity: json['default_quantity'].toDouble(),
       );
     } catch (e) {
-      print('Error parsing JSON: ${json.toString()}');
-      print('Category value: ${json['category']}');
-      print('UnitType value: ${json['unit_type']}');
+      log('Error parsing JSON: ${json.toString()}');
+      log('Category value: ${json['category']}');
+      log('UnitType value: ${json['unit_type']}');
       rethrow;
     }
   }

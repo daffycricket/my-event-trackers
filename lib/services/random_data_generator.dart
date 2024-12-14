@@ -122,7 +122,7 @@ class RandomDataGenerator {
     }
 
     return MealEvent(
-      id: _uuid.v4(),
+      id: _random.nextInt(1000000),
       date: date,
       type: type,
       foods: foods,
@@ -141,7 +141,7 @@ class RandomDataGenerator {
   WorkoutEvent _generateRandomWorkout(DateTime date) {
     const types = WorkoutType.values;
     return WorkoutEvent(
-      id: _uuid.v4(),
+      id: _random.nextInt(1000000),
       date: date,
       type: types[_random.nextInt(types.length)],
       duration: Duration(minutes: (_random.nextInt(6) + 1) * 15), // 15-90 minutes

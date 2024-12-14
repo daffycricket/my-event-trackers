@@ -30,7 +30,7 @@ class EventList extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            ...dayEvents.map((event) => EventListItem(event: event)).toList(),
+            ...dayEvents.map((event) => EventListItem(event: event)),
             if (index < groupedEvents.length - 1) const Divider(),
           ],
         );

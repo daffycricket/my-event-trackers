@@ -80,5 +80,10 @@
     "totalDuration": "Gesamtdauer",
     "totalCalories": "Gesamtkalorien",
     "mealActivity": "Mahlzeitenaktivität (Letzte 7 Tage)",
-    "workoutActivity": "Trainingsaktivität (Letzte 7 Tage)"
+    "workoutActivity": "Trainingsaktivität (Letzte 7 Tage)",
+    "running": "Laufen",
+    "cycling": "Radfahren",
+    "fitness": "Fitness",
+    "strength": "Krafttraining",
+    "deleteEventError": "Fehler beim Löschen des Ereignisses"
 } 

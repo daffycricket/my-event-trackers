@@ -129,10 +129,10 @@ class StatisticsScreen extends ConsumerWidget {
 
   Widget _buildWorkoutSummaryCard(BuildContext context, List<WorkoutEvent> events) {
     // Compter les workouts par type
-    final cardioCount = events.where((e) => e.type == WorkoutType.cardio).length;
+    final runningCount = events.where((e) => e.type == WorkoutType.running).length;
+    final cyclingCount = events.where((e) => e.type == WorkoutType.cycling).length;
+    final fitnessCount = events.where((e) => e.type == WorkoutType.fitness).length;
     final strengthCount = events.where((e) => e.type == WorkoutType.strength).length;
-    final flexibilityCount = events.where((e) => e.type == WorkoutType.flexibility).length;
-    final sportCount = events.where((e) => e.type == WorkoutType.sport).length;
 
     // Calculer les stats globales
     final totalDuration = events.fold<Duration>(
@@ -157,32 +157,32 @@ class StatisticsScreen extends ConsumerWidget {
             _buildStatRow(
               context,
               Icons.directions_run,
-              AppLocalizations.of(context)!.cardio,
-              cardioCount.toString(),
+              AppLocalizations.of(context)!.running,
+              runningCount.toString(),
               Colors.blue[300]!,
             ),
             const SizedBox(height: 8),
             _buildStatRow(
               context,
-              Icons.fitness_center,
-              AppLocalizations.of(context)!.strength,
-              strengthCount.toString(),
+              Icons.directions_bike,
+              AppLocalizations.of(context)!.cycling,
+              cyclingCount.toString(),
               Colors.blue[500]!,
             ),
             const SizedBox(height: 8),
             _buildStatRow(
               context,
-              Icons.self_improvement,
-              AppLocalizations.of(context)!.flexibility,
-              flexibilityCount.toString(),
+              Icons.fitness_center,
+              AppLocalizations.of(context)!.fitness,
+              fitnessCount.toString(),
               Colors.blue[700]!,
             ),
             const SizedBox(height: 8),
             _buildStatRow(
               context,
-              Icons.sports_basketball,
-              AppLocalizations.of(context)!.sport,
-              sportCount.toString(),
+              Icons.sports_gymnastics,
+              AppLocalizations.of(context)!.strength,
+              strengthCount.toString(),
               Colors.blue[900]!,
             ),
             const Divider(height: 24),
@@ -268,7 +268,7 @@ class StatisticsScreen extends ConsumerWidget {
               height: 200,
               child: LineChart(
                 LineChartData(
-                  gridData: FlGridData(show: false),
+                  gridData: const FlGridData(show: false),
                   titlesData: FlTitlesData(
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
@@ -288,7 +288,7 @@ class StatisticsScreen extends ConsumerWidget {
                       isCurved: true,
                       color: color,
                       barWidth: 3,
-                      dotData: FlDotData(show: true),
+                      dotData: const FlDotData(show: true),
                     ),
                   ],
                 ),

@@ -1,7 +1,7 @@
 import 'package:my_event_tracker/models/meal_item.dart';
 
 abstract class Event {
-  final String id;
+  final int id;
   final DateTime date;
   final String? notes;
 
@@ -49,7 +49,7 @@ class MealEvent extends Event {
       'food_id': food.name,
       'quantity': food.quantity,
     }).toList(),
-    'type': type.name,
+    'meal_type': type.name,
   };
 
   factory MealEvent.fromJson(Map<String, dynamic> json) {
@@ -62,12 +62,12 @@ class MealEvent extends Event {
     ).toList();
     
     return MealEvent(
-      id: json['id'].toString(),
+      id: json['id'] as int,
       date: DateTime.parse(json['date']),
       notes: json['notes'],
       foods: mealItems,
       type: MealType.values.firstWhere(
-        (e) => e.name == (data['type'] ?? 'snack'),
+        (e) => e.name == (data['meal_type'] ?? 'snack'),
         orElse: () => MealType.snack,
       ),
     );
@@ -79,6 +79,9 @@ class MealEvent extends Event {
       'type': 'MEAL',
       'date': date.toIso8601String(),
       'notes': notes,
+      'data': {
+        'meal_type': type.name,
+      },
       'meal_items': foods.map((food) => {
         'name': food.name,
         'quantity': food.quantity,
@@ -106,19 +109,19 @@ class WorkoutEvent extends Event {
   @override
   Map<String, dynamic> _dataToJson() => {
     'duration': duration.inMinutes,
-    'type': type.name,
+    'workout_type': type.name,
     'calories_burned': caloriesBurned,
   };
 
   factory WorkoutEvent.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>;
     return WorkoutEvent(
-      id: json['id'],
+      id: json['id'] as int,
       date: DateTime.parse(json['date']),
       notes: json['notes'],
       duration: Duration(minutes: data['duration']),
       type: WorkoutType.values.firstWhere(
-        (e) => e.name == data['type'],
+        (e) => e.name == data['workout_type'],
       ),
       caloriesBurned: data['calories_burned'],
     );
@@ -133,8 +136,8 @@ enum MealType {
 }
 
 enum WorkoutType {
-  cardio,
-  strength,
-  flexibility,
-  sport
+  running,
+  cycling,
+  fitness,
+  strength
 }

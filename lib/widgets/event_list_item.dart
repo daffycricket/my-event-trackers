@@ -14,7 +14,7 @@ class EventListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Dismissible(
-      key: Key(event.id),
+      key: Key(event.id.toString()),
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerRight,
@@ -42,20 +42,32 @@ class EventListItem extends ConsumerWidget {
           ],
         ),
       ),
-      onDismissed: (direction) {
+      onDismissed: (direction) async {
         final deletedEvent = event;
-        ref.read(eventsProvider.notifier).deleteEvent(event.id);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.eventDeleted),
-            action: SnackBarAction(
-              label: AppLocalizations.of(context)!.undo,
-              onPressed: () {
-                ref.read(eventsProvider.notifier).addEvent(deletedEvent);
-              },
-            ),
-          ),
-        );
+        try {
+          await ref.read(eventsProvider.notifier).deleteEvent(event.id);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.eventDeleted),
+                action: SnackBarAction(
+                  label: AppLocalizations.of(context)!.undo,
+                  onPressed: () {
+                    ref.read(eventsProvider.notifier).addEvent(deletedEvent);
+                  },
+                ),
+              ),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(AppLocalizations.of(context)!.deleteEventError)),
+            );
+            // Forcer la reconstruction de la liste pour restaurer l'élément
+            ref.refresh(eventsProvider);
+          }
+        }
       },
       child: ListTile(
         leading: Icon(

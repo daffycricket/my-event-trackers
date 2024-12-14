@@ -24,14 +24,14 @@ class _WorkoutDetailScreenState extends ConsumerState<WorkoutDetailScreen> {
     
     String getWorkoutTypeText(WorkoutType type) {
       switch (type) {
-        case WorkoutType.cardio:
-          return l10n.cardio;
+        case WorkoutType.running:
+          return l10n.running;
+        case WorkoutType.cycling:
+          return l10n.cycling;
+        case WorkoutType.fitness:
+          return l10n.fitness;
         case WorkoutType.strength:
           return l10n.strength;
-        case WorkoutType.flexibility:
-          return l10n.flexibility;
-        case WorkoutType.sport:
-          return l10n.sport;
       }
     }
     
