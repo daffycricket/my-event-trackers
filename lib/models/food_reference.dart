@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 import 'dart:developer';
@@ -41,4 +43,7 @@ class FoodReference {
     'unit_type': unitType.name.toLowerCase(),
     'default_quantity': defaultQuantity,
   };
+
+  @override
+  String toString() => toJson().toString();
 } 

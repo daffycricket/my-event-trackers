@@ -6,6 +6,7 @@ import 'package:my_event_tracker/models/food_reference.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 import 'package:my_event_tracker/providers/config_provider.dart';
 import 'package:my_event_tracker/screens/create_meal_screen.dart';
+import 'package:my_event_tracker/utils/logger.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,6 +37,26 @@ class MealDetailScreen extends ConsumerWidget {
 
     return ref.watch(foodReferencesProvider).when(
       data: (foodReferences) {
+        AppLogger.info("État complet du repas :");
+        AppLogger.info(updatedMeal);
+        AppLogger.info("Liste des aliments brute :");
+        AppLogger.info(updatedMeal.foods);
+
+        // Pour chaque aliment, vérifions le matching
+        for (var foodItem in updatedMeal.foods) {
+          final matchingRef = foodReferences.firstWhere(
+            (ref) => ref.name == foodItem.name,
+            orElse: () => FoodReference(
+              name: foodItem.name.toLowerCase().replaceAll(' ', '_'),
+              label: foodItem.name,
+              category: FoodCategory.snacks,
+              unitType: UnitType.unit,
+              defaultQuantity: 1.0,
+            ),
+          );
+          AppLogger.info("Recherche de correspondance pour ${foodItem.name} : ${matchingRef != null ? 'trouvé' : 'non trouvé'}");
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: Text(l10n.mealDetails),

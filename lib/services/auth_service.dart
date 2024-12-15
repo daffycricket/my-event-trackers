@@ -21,14 +21,17 @@ class AuthService extends BaseService {
       );
       
       logInfo('Response status: ${response.statusCode}');
-      logInfo('Response body: ${response.body}');
+      logFine('Response body:');
+      logFine(response.body);
       
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         logInfo('Decoded response: $data');
         return data['access_token'];
       } else {
-        logSevere('Login failed with status ${response.statusCode}: ${response.body}');
+        logSevere('Login failed with status ${response.statusCode}');
+        logSevere('Response body:');
+        logSevere(response.body);
         throw Exception('Login failed: ${response.statusCode}');
       }
     } catch (e, stackTrace) {

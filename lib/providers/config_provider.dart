@@ -16,10 +16,19 @@ final foodReferencesProvider = FutureProvider<List<FoodReference>>((ref) async {
   final service = ref.watch(configServiceProvider);
   final context = ref.read(navigatorKeyProvider).currentContext;
   
-  // Si le contexte n'est pas disponible, on utilise la langue par défaut
   final language = context != null 
     ? Localizations.localeOf(context).languageCode 
-    : 'fr';  // langue par défaut
+    : 'fr';
     
-  return service.getFoodReferences(language);
+  final foods = await service.getFoodReferences(language);
+  return foods;
 }); 
+
+final mealItemWithReferenceProvider = Provider.family<FoodReference?, String>((ref, foodId) {
+  final foodReferences = ref.watch(foodReferencesProvider).value ?? [];
+  try {
+    return foodReferences.firstWhere((food) => food.name == foodId);
+  } catch (e) {
+    return null;
+  }
+});

@@ -7,3 +7,4 @@ enum FoodCategory {
   drinks,
   snacks
 }
+

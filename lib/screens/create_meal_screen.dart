@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_event_tracker/extensions/food_catagory_ui_extension.dart';
 import 'package:my_event_tracker/extensions/unit_type_ui_extension.dart';
 import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/food_reference.dart';
@@ -9,7 +10,6 @@ import '../providers/events_provider.dart';
 import '../mixins/date_time_picker_mixin.dart';
 import '../widgets/common_event_fields.dart';
 import '../models/meal_item.dart';
-import '../data/food_suggestions.dart';
 import '../models/unit_type.dart';
 import '../widgets/food_tag.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -80,47 +80,55 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
   }
 
   Widget _buildSuggestions(BuildContext context) {
-    final groupedSuggestions = <FoodCategory, List<FoodItem>>{};
-    final suggestions = getFoodSuggestions(context);
-    
-    for (var food in suggestions) {
-      groupedSuggestions.putIfAbsent(food.category, () => []).add(food);
-    }
+    return FutureBuilder<List<FoodReference>>(
+      future: ref.read(foodReferencesProvider.future),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: groupedSuggestions.entries.map((entry) {
-        final category = entry.key;
-        final foods = entry.value;
-        
+        final foodReferences = snapshot.data!;
+        final groupedReferences = <FoodCategory, List<FoodReference>>{};
+
+        for (var food in foodReferences) {
+          groupedReferences.putIfAbsent(food.category, () => []).add(food);
+        }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                category.getName(context),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ),
-            Wrap(
-              children: foods.map((food) {
-                final foodName = food.getName(context);
-                final isSelected = _foodItems.any(
-                  (item) => item.label == foodName
-                );
-                
-                return FoodTag(
-                  name: foodName,
-                  color: food.category.color,
-                  onTap: isSelected ? null : () => _addFoodItem(foodName),
-                  isSelected: isSelected,
-                );
-              }).toList(),
-            ),
-          ],
+          children: groupedReferences.entries.map((entry) {
+            final category = entry.key;
+            final foods = entry.value;
+            
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    category.getName(context),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                Wrap(
+                  children: foods.map((food) {
+                    final isSelected = _foodItems.any(
+                      (item) => item.id == food.name
+                    );
+                    
+                    return FoodTag(
+                      name: food.label,
+                      color: food.category.color,
+                      onTap: isSelected ? null : () => _addFoodItem(food.name),
+                      isSelected: isSelected,
+                    );
+                  }).toList(),
+                ),
+              ],
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 
@@ -146,7 +154,6 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
       ));
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +255,7 @@ class _CreateMealScreenState extends ConsumerState<CreateMealScreen>
     final foods = <MealItem>[];
     for (var item in _foodItems) {
       if (item.quantityController.text.isNotEmpty) {
-        final quantity = num.tryParse(item.quantityController.text);
+        final quantity = double.tryParse(item.quantityController.text);
         if (quantity != null) {
           foods.add(MealItem(
             name: item.id,

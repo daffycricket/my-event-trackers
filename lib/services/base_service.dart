@@ -1,15 +1,17 @@
 import 'package:logging/logging.dart';
+import 'package:my_event_tracker/utils/logger.dart';
 
 abstract class BaseService {
   static const String baseUrl = 'http://10.0.2.2:9095';
-  final Logger _logger;
+  final String _serviceName;
 
-  BaseService(String name) : _logger = Logger(name);
+  BaseService(String name) : _serviceName = name;
 
-  // Méthodes utilitaires pour les logs
-  void logInfo(String message) => _logger.info(message);
-  void logFine(String message) => _logger.fine(message);
-  void logWarning(String message) => _logger.warning(message);
+  void logInfo(String message) => AppLogger.info(message);
+  void logFine(String message) => AppLogger.fine(message);
+  void logWarning(String message) => AppLogger.warning(message);
   void logSevere(String message, [Object? error, StackTrace? stackTrace]) => 
-      _logger.severe(message, error, stackTrace);
+      AppLogger.severe(message, error, stackTrace);
+
+  Logger get serviceName => Logger(_serviceName);
 } 

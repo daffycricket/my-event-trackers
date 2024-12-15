@@ -29,6 +29,9 @@ abstract class Event {
       return WorkoutEvent.fromJson(json);
     }
   }
+
+    @override
+  String toString() => toJson().toString();
 }
 
 class MealEvent extends Event {
@@ -47,7 +50,7 @@ class MealEvent extends Event {
   Map<String, dynamic> _dataToJson() => {
     'meal_items': foods.map((food) => {
       'food_id': food.name,
-      'quantity': food.quantity,
+      'quantity': food.quantity.toDouble(),
     }).toList(),
     'meal_type': type.name,
   };
@@ -56,7 +59,7 @@ class MealEvent extends Event {
     final data = json['data'] as Map<String, dynamic>? ?? json;
     final mealItems = (data['meal_items'] as List<dynamic>? ?? []).map((item) => 
       MealItem(
-        name: item['food_id'].toString(),
+        name: item['name'].toString(),
         quantity: (item['quantity'] as num).toDouble(),
       )
     ).toList();

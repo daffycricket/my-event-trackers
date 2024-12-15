@@ -18,14 +18,25 @@ class ApiConfigService extends BaseService implements ConfigService {
       );
       logInfo('Fetching food references from $uri');
       
-      final response = await http.get(uri);
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+      });
       
       logInfo('Response status: ${response.statusCode}');
-      logFine('Response body: ${response.body}');
+      logFine('Response body');
+      logFine(response.body);
       
       if (response.statusCode == 200) {
-        final List<dynamic> decodedResponse = json.decode(response.body);
-        return decodedResponse.map((json) => FoodReference.fromJson(json)).toList();
+        try {
+          final List<dynamic> decodedResponse = json.decode(response.body);
+          var foodReferences = decodedResponse.map((json) => FoodReference.fromJson(json)).toList();
+          logInfo('Response parsed successfully, ${foodReferences.length} food references');
+          return foodReferences;
+        } catch (e, stackTrace) {
+          logSevere('Error parsing response', e, stackTrace);
+          rethrow;
+        }
       } else {
         throw Exception('Failed to load food references: ${response.statusCode}');
       }

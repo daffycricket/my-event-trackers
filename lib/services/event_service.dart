@@ -18,6 +18,7 @@ class EventService extends BaseService {
       }
 
       logInfo('Fetching events from ${BaseService.baseUrl}/api/events/');
+      logInfo('Request bearer token: $token');
       final response = await http.get(
         Uri.parse('${BaseService.baseUrl}/api/events/'),
         headers: {
@@ -26,26 +27,34 @@ class EventService extends BaseService {
       );
       
       logInfo('Response status: ${response.statusCode}');
-      logFine('Response body: ${response.body}');
+      logFine('Response body:');
+      logFine(response.body);
       
       if (response.statusCode == 200) {
-        final dynamic decodedResponse = json.decode(response.body);
-        
-        logInfo('Decoded response type: ${decodedResponse.runtimeType}');
-        logInfo('Decoded response: $decodedResponse');
-        
-        if (decodedResponse == null) {
-          return [];
-        }
-        
-        if (decodedResponse is List) {
-          return decodedResponse.map((json) => Event.fromJson(json)).toList();
-        } else {
-          logWarning('Unexpected response format: $decodedResponse');
-          return [];
+        try {
+          final dynamic decodedResponse = json.decode(response.body);
+          
+          if (decodedResponse == null) {
+            logWarning('Response is null');
+            return [];
+          }
+
+          if (decodedResponse is List) {
+            logInfo('Response parsed successfully, ${decodedResponse.length} events');
+            return decodedResponse.map((json) => Event.fromJson(json)).toList();
+          } else {
+            logWarning('Unexpected response format: $decodedResponse');
+            return [];
+          }
+
+        } catch (e, stackTrace) {
+          logSevere('Error parsing response', e, stackTrace);
+          rethrow;
         }
       } else {
-        throw Exception('Failed to load events: ${response.statusCode}');
+        final error = 'Failed to load events: ${response.statusCode} \nBody: ${response.body}';
+        logSevere(error);
+        throw Exception(error);
       }
     } catch (e, stackTrace) {
       logSevere('Error fetching events', e, stackTrace);
@@ -56,7 +65,9 @@ class EventService extends BaseService {
   Future<Event> createEvent(Event event) async {
     final jsonData = event.toJson();
     logInfo('Creating event at ${BaseService.baseUrl}/api/events');
-    logInfo('Request payload:\n${const JsonEncoder.withIndent('  ').convert(jsonData)}');
+    logInfo('Request bearer token: ${_ref.read(authStateProvider)}');
+    logInfo('Request body:');
+    logInfo(json.encode(jsonData));
 
     final response = await http.post(
       Uri.parse('${BaseService.baseUrl}/api/events'),
@@ -68,13 +79,22 @@ class EventService extends BaseService {
     );
     
     logInfo('Response status: ${response.statusCode}');
-    logInfo('Response body:\n${const JsonEncoder.withIndent('  ').convert(json.decode(response.body))}');
-    
+    logInfo('Response body:');
+    logInfo(response.body);
+
     if (response.statusCode == 200) {
-      return Event.fromJson(json.decode(response.body));
+      try {
+        final responseEvent = Event.fromJson(json.decode(response.body));
+        logInfo('Response parsed successfully');
+        return responseEvent;
+      } catch (e, stackTrace) {
+        logSevere('Error parsing response', e, stackTrace);
+        rethrow;
+      }
     } else {
-      final error = 'Failed to create event: ${response.statusCode}\nBody: ${response.body}';
+      final error = 'Failed to create event: ${response.statusCode}';
       logSevere(error);
+      logSevere('Error: $error');
       throw Exception(error);
     }
   }
@@ -87,7 +107,9 @@ class EventService extends BaseService {
 
     final jsonData = event.toJson();
     logInfo('Updating event at ${BaseService.baseUrl}/api/events/$id');
-    logInfo('Request payload:\n${const JsonEncoder.withIndent('  ').convert(jsonData)}');
+    logInfo('Request bearer token: $token');
+    logInfo('Request body:');
+    logInfo(json.encode(jsonData));
 
     final response = await http.put(
       Uri.parse('${BaseService.baseUrl}/api/events/$id'),
@@ -99,10 +121,18 @@ class EventService extends BaseService {
     );
 
     logInfo('Response status: ${response.statusCode}');
-    logInfo('Response body:\n${const JsonEncoder.withIndent('  ').convert(json.decode(response.body))}');
+    logInfo('Response body:');
+    logInfo(response.body);
     
     if (response.statusCode == 200) {
-      return Event.fromJson(json.decode(response.body));
+      try {
+        final responseEvent = Event.fromJson(json.decode(response.body));
+        logInfo('Response body parsed successfully');
+        return responseEvent;
+      } catch (e, stackTrace) {
+        logSevere('Error parsing response', e, stackTrace);
+        rethrow;
+      }
     } else {
       final error = 'Failed to update event: ${response.statusCode}\nBody: ${response.body}';
       logSevere(error);
@@ -116,7 +146,7 @@ class EventService extends BaseService {
       throw Exception('Not authenticated');
     }
     logInfo('Deleting event at ${BaseService.baseUrl}/api/events/$id');
-    logInfo('Request headers: $token');
+    logInfo('Request bearer token: $token');
 
     final response = await http.delete(
       Uri.parse('${BaseService.baseUrl}/api/events/$id'),
@@ -125,7 +155,8 @@ class EventService extends BaseService {
       },
     );
     logInfo('Response status: ${response.statusCode}');
-    logInfo('Response body: ${response.body}'); 
+    logInfo('Response body:');
+    logInfo(response.body);
     
     if (response.statusCode != 200) {
       final error = 'Failed to delete event: ${response.statusCode}\nBody: ${response.body}';

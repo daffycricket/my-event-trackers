@@ -14,7 +14,17 @@ void main() async {
   // Initialiser le logging
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
-    debugPrint('${record.level.name}: ${record.time}: ${record.message}');
+    final message = record.message;
+    final time = record.time;
+    final level = record.level.name;
+    final error = record.error;
+    final stackTrace = record.stackTrace;
+    
+    if (error != null || stackTrace != null) {
+      debugPrint('$level: $time: $message\n$error\n$stackTrace');
+    } else {
+      debugPrint('$level: $time: $message');
+    }
   });
 
   // Initialiser les formats de date
