@@ -1,3 +1,11 @@
+Bugs
+| Description | Composant | Statut | Commit |
+|-------|--------|--------|--------|
+| Bug : à la modification d'un repas, si je change les aliments, l'API renvoie les mêmes ids d'aliments qu'à la création | API | TODO |  |
+| Bug : l'app ne prend pas en compte les aliments d'un menu | APP | TODO |  |
+
+
+
 P1 fonctionnel
 | Tâche | Statut |
 |-------|--------|
@@ -106,3 +114,77 @@ P2
 - Les réponses d'erreur suivent le format : ```json { "error": "message", "code": "ERROR_CODE" }```
 - Les listes paginées retournent toujours : ```json { "items": [...], "total": n, "page": x, "per_page": y }```
 - Le paramètre `language` accepte les codes ISO 639-1 (ex: 'fr', 'en', 'de')
+
+
+
+
+
+
+-------
+
+I/flutter ( 6609): INFO: 2024-12-15 18:54:58.636361: Updating event at http://10.0.2.2:9095/api/events/41
+I/flutter ( 6609): INFO: 2024-12-15 18:54:58.636581: Request bearer token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXVkIjpbImZhc3RhcGktdXNlcnM6YXV0aCJdLCJleHAiOjE3MzQyODg2MzF9.IYkQ503VvV32xoaG26vnlie50zplTqI-IqKDcInxvtY
+I/flutter ( 6609): INFO: 2024-12-15 18:54:58.636623: Request body:
+I/flutter ( 6609): INFO: 2024-12-15 18:54:58.636798:
+I/flutter ( 6609): {
+I/flutter ( 6609):   "type": "MEAL",
+I/flutter ( 6609):   "date": "2024-12-08T18:53:00.000",
+I/flutter ( 6609):   "notes": "pbo ctc",
+I/flutter ( 6609):   "data": {
+I/flutter ( 6609):     "meal_type": "snack"
+I/flutter ( 6609):   },
+I/flutter ( 6609):   "meal_items": [
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "carrot",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     },
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "tomato",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     },
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "cucumber",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     }
+I/flutter ( 6609):   ]
+I/flutter ( 6609): }
+I/ImeTracker( 6609): org.nla.my_event_tracker:4f7dbcb5: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+D/InsetsController( 6609): hide(ime(), fromIme=true)
+D/EGL_emulation( 6609): app_time_stats: avg=531.28ms min=0.56ms max=10603.43ms count=20
+I/ImeTracker( 6609): org.nla.my_event_tracker:bc191c18: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+I/ImeTracker( 6609): org.nla.my_event_tracker:4f7dbcb5: onHidden
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.163873: Response status: 200
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.164149: Response body:
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.164513:
+I/flutter ( 6609): {
+I/flutter ( 6609):   "id": 41,
+I/flutter ( 6609):   "type": "MEAL",
+I/flutter ( 6609):   "date": "2024-12-08T18:53:00Z",
+I/flutter ( 6609):   "notes": "pbo ctc",
+I/flutter ( 6609):   "data": {
+I/flutter ( 6609):     "meal_type": "snack"
+I/flutter ( 6609):   },
+I/flutter ( 6609):   "user_id": 1,
+I/flutter ( 6609):   "created_at": "2024-12-15T17:53:55.798419Z",
+I/flutter ( 6609):   "updated_at": "2024-12-15T17:54:59.342093Z",
+I/flutter ( 6609):   "meal_items": [
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "apple",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     },
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "banana",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     },
+I/flutter ( 6609):     {
+I/flutter ( 6609):       "name": "orange",
+I/flutter ( 6609):       "quantity": 1.0
+I/flutter ( 6609):     }
+I/flutter ( 6609):   ]
+I/flutter ( 6609): }
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.165127: Response body parsed successfully
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.172626: État complet du repas :
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.172748: {type: MEAL, date: 2024-12-08T18:53:00.000Z, notes: pbo ctc, data: {meal_type: snack}, meal_items: []}
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.172798: Liste des aliments brute :
+I/flutter ( 6609): INFO: 2024-12-15 18:54:59.172830:
+I/flutter ( 6609): []

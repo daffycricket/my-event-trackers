@@ -1,4 +1,5 @@
 import 'package:my_event_tracker/models/meal_item.dart';
+import 'package:my_event_tracker/utils/logger.dart';
 
 abstract class Event {
   final int id;
@@ -48,23 +49,17 @@ class MealEvent extends Event {
 
   @override
   Map<String, dynamic> _dataToJson() => {
-    'meal_items': foods.map((food) => {
-      'food_id': food.name,
-      'quantity': food.quantity.toDouble(),
-    }).toList(),
     'meal_type': type.name,
   };
 
   factory MealEvent.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>? ?? json;
-    final mealItems = (data['meal_items'] as List<dynamic>? ?? []).map((item) => 
-      MealItem(
-        name: item['name'].toString(),
-        quantity: (item['quantity'] as num).toDouble(),
-      )
-    ).toList();
+    final mealItems = (json['meal_items'] as List<dynamic>? ?? [])
+        .map((item) => MealItem.fromJson(item))
+        .toList();
     
-    return MealEvent(
+    MealEvent toReturn;
+    toReturn = MealEvent(
       id: json['id'] as int,
       date: DateTime.parse(json['date']),
       notes: json['notes'],
@@ -74,6 +69,11 @@ class MealEvent extends Event {
         orElse: () => MealType.snack,
       ),
     );
+    AppLogger.info("-------------------------- Meal EVENT fromJson");
+    AppLogger.info(toReturn);
+    AppLogger.info("-------------------------- Meal EVENT fromJson !!!!!!");
+
+    return toReturn;
   }
 
   @override
@@ -85,10 +85,7 @@ class MealEvent extends Event {
       'data': {
         'meal_type': type.name,
       },
-      'meal_items': foods.map((food) => {
-        'name': food.name,
-        'quantity': food.quantity,
-      }).toList(),
+      'meal_items': foods.map((food) => food.toJson()).toList(),
     };
     
     return baseJson;
@@ -117,14 +114,15 @@ class WorkoutEvent extends Event {
   };
 
   factory WorkoutEvent.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>;
+    final data = json['data'] as Map<String, dynamic>? ?? json;
     return WorkoutEvent(
       id: json['id'] as int,
       date: DateTime.parse(json['date']),
       notes: json['notes'],
-      duration: Duration(minutes: data['duration']),
+      duration: Duration(minutes: data['duration'] ?? 0),
       type: WorkoutType.values.firstWhere(
-        (e) => e.name == data['workout_type'],
+        (e) => e.name == (data['workout_type'] ?? 'running'),
+        orElse: () => WorkoutType.running,
       ),
       caloriesBurned: data['calories_burned'],
     );
