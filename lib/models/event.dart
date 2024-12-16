@@ -1,5 +1,4 @@
 import 'package:my_event_tracker/models/meal_item.dart';
-import 'package:my_event_tracker/utils/logger.dart';
 
 abstract class Event {
   final int id;
@@ -31,7 +30,7 @@ abstract class Event {
     }
   }
 
-    @override
+  @override
   String toString() => toJson().toString();
 }
 
@@ -69,24 +68,18 @@ class MealEvent extends Event {
         orElse: () => MealType.snack,
       ),
     );
-    AppLogger.info("-------------------------- Meal EVENT fromJson");
-    AppLogger.info(toReturn);
-    AppLogger.info("-------------------------- Meal EVENT fromJson !!!!!!");
 
     return toReturn;
   }
 
   @override
   Map<String, dynamic> toJson() {
-    final baseJson = {
-      'type': 'MEAL',
-      'date': date.toIso8601String(),
-      'notes': notes,
-      'data': {
-        'meal_type': type.name,
-      },
-      'meal_items': foods.map((food) => food.toJson()).toList(),
-    };
+    final baseJson = super.toJson();
+    baseJson.addAll(
+      {
+        'meal_items': foods.map((food) => food.toJson()).toList(),
+      }
+    );
     
     return baseJson;
   }

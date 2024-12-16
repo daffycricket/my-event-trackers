@@ -86,5 +86,13 @@
     "running": "Course",
     "cycling": "Vélo",
     "fitness": "Fitness",
-    "deleteEventError": "Erreur lors de la suppression de l'événement"
+    "deleteEventError": "Erreur lors de la suppression de l'événement",
+    "categoryBreakfast": "Petit-déjeuner",
+    "categoryLunch": "Déjeuner",
+    "categoryDinner": "Dîner",
+    "categorySnacks": "Collation",
+    "categoryRunning": "Course",
+    "categoryCycling": "Vélo",
+    "categoryFitness": "Fitness",
+    "categoryStrength": "Musculation"
 } 

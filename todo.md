@@ -1,8 +1,8 @@
 Bugs
 | Description | Composant | Statut | Commit |
 |-------|--------|--------|--------|
-| Bug : à la modification d'un repas, si je change les aliments, l'API renvoie les mêmes ids d'aliments qu'à la création | API | TODO |  |
-| Bug : l'app ne prend pas en compte les aliments d'un menu | APP | TODO |  |
+| Bug : à la modification d'un repas, si je change les aliments, l'API renvoie les mêmes ids d'aliments qu'à la création | API | DONE | e78f7fa |
+| Bug : l'app ne prend pas en compte les aliments d'un menu | APP | DONE | ac430a1 |
 
 
 

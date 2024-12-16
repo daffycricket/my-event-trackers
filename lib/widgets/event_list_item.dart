@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_event_tracker/extensions/event_ui_extensions.dart';
+import 'package:my_event_tracker/models/food_reference.dart';
+import 'package:my_event_tracker/providers/config_provider.dart';
 import '../models/event.dart';
 import '../providers/events_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -75,9 +78,9 @@ class EventListItem extends ConsumerWidget {
           color: event is MealEvent ? Colors.orange : Colors.blue,
         ),
         title: Text(_getEventTitle(event, context)),
-        subtitle: _buildSubtitle(event, context),
+        subtitle: _buildSubtitle(event, context, ref),
         trailing: Text(
-          '${event.date.day}/${event.date.month}/${event.date.year}',
+          '${event.date.hour}:${event.date.minute.toString().padLeft(2, '0')}',
         ),
         onTap: () {
           if (event is MealEvent) {
@@ -105,18 +108,54 @@ String _getEventTitle(Event event, BuildContext context) {
   if (localizations == null) return ''; // Gestion du cas où les localisations ne sont pas disponibles
   
   if (event is MealEvent) {
-    return localizations.meal;
+    return event.type.getName(context);
   } else if (event is WorkoutEvent) {
-    return localizations.workout;
+    return event.type.getName(context);
   }
-  return '';
+  return 'UNKNOWN_TYPE';
 }
 
-  Widget _buildSubtitle(Event event, BuildContext context) {
+  Widget _buildSubtitle(Event event, BuildContext context, WidgetRef ref) {
     if (event is MealEvent) {
-      return Text('${event.type.name} - ${event.foods.length} items');
+
+    return FutureBuilder<List<FoodReference>>(
+          future: ref.read(foodReferencesProvider.future),
+          builder: (context, snapshot) {
+            // Gérer les états de chargement et d'erreur
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            if (!snapshot.hasData) {
+              return const SizedBox.shrink();
+            }
+            final foodReferences = snapshot.data!;
+
+            // Utiliser les données
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (event.foods.isNotEmpty)
+                    Text(event.foods.map((f) => foodReferences.firstWhere((food) => food.name == f.name).label).join(', ')),
+                  if (event.notes != null && event.notes!.isNotEmpty)
+                    Text(event.notes!),
+
+                ],
+              );
+          }
+        );
     } else if (event is WorkoutEvent) {
-      return Text('${event.type.name} - ${event.duration.inMinutes} min');
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (event.duration.inMinutes > 0 || event.caloriesBurned != null)
+            Text([
+              if (event.duration.inMinutes > 0) '${event.duration.inMinutes} min',
+              if (event.caloriesBurned != null) '${event.caloriesBurned} kcal',
+            ].join(' - ')),
+          if (event.notes != null && event.notes!.isNotEmpty)
+            Text(event.notes!),
+        ],
+      );
     }
     return const SizedBox.shrink();
   }

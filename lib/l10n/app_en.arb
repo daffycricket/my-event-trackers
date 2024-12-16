@@ -84,5 +84,13 @@
     "running": "Running",
     "cycling": "Cycling",
     "fitness": "Fitness",
-    "deleteEventError": "Error deleting event"
-} 
+    "deleteEventError": "Error deleting event",
+    "categoryBreakfast": "Breakfast",
+    "categoryLunch": "Lunch",
+    "categoryDinner": "Dinner",
+    "categorySnacks": "Snack",
+    "categoryRunning": "Running",
+    "categoryCycling": "Cycling",
+    "categoryFitness": "Fitness",
+    "categoryStrength": "Strength"
+}

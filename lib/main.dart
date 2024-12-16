@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_event_tracker/providers/auth_provider.dart';
 import 'package:my_event_tracker/screens/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_event_tracker/widgets/initialization.dart';
 import 'providers/config_provider.dart';
 import 'package:my_event_tracker/screens/event_list_screen.dart';
 
@@ -32,7 +33,7 @@ void main() async {
 
   // Précharger les configurations
   final container = ProviderContainer();
-  await container.read(foodReferencesProvider.future);
+  //await container.read(foodReferencesProvider.future);
 
   runApp(
     UncontrolledProviderScope(
@@ -50,7 +51,9 @@ class MyApp extends ConsumerWidget {
     final token = ref.watch(authStateProvider);
 
     return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      navigatorKey: ref.watch(navigatorKeyProvider),
+      localizationsDelegates: 
+      AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         appBar: AppBar(
@@ -67,7 +70,7 @@ class MyApp extends ConsumerWidget {
         ),
         body: token == null 
             ? const LoginScreen() 
-            : const EventListScreen(),
+            : const InitializationWidget(),
       ),
     );
   }
