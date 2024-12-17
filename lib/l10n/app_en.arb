@@ -92,5 +92,22 @@
     "categoryRunning": "Running",
     "categoryCycling": "Cycling",
     "categoryFitness": "Fitness",
-    "categoryStrength": "Strength"
+    "categoryStrength": "Strength",
+    "registerTitle": "Register",
+    "emailLabel": "Email",
+    "emailRequired": "Please enter your email",
+    "passwordLabel": "Password",
+    "passwordRequired": "Please enter your password",
+    "confirmPasswordLabel": "Confirm password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "registerButton": "Register",
+    "registerError": "Registration error: {error}",
+    "alreadyHaveAccount": "Already have an account? Login",
+    "noAccountYet": "No account yet? Register",
+    "@registerError": {
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "invalidEmail": "Please enter a valid email"
 }

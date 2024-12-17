@@ -85,5 +85,11 @@
     "cycling": "Radfahren",
     "fitness": "Fitness",
     "strength": "Krafttraining",
-    "deleteEventError": "Fehler beim Löschen des Ereignisses"
+    "deleteEventError": "Fehler beim Löschen des Ereignisses",
+    "registerError": "Registrierungsfehler: {error}",
+    "@registerError": {
+        "placeholders": {
+            "error": {}
+        }
+    }
 } 

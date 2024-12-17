@@ -88,5 +88,11 @@
     "running": "Löpning",
     "cycling": "Cykling",
     "fitness": "Fitness",
-    "deleteEventError": "Fel vid borttagning av händelsen"
+    "deleteEventError": "Fel vid borttagning av händelsen",
+    "registerError": "Registreringsfel: {error}",
+    "@registerError": {
+        "placeholders": {
+            "error": {}
+        }
+    }
 } 

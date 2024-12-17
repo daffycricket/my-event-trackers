@@ -94,5 +94,22 @@
     "categoryRunning": "Course",
     "categoryCycling": "Vélo",
     "categoryFitness": "Fitness",
-    "categoryStrength": "Musculation"
+    "categoryStrength": "Musculation",
+    "registerTitle": "Inscription",
+    "emailLabel": "Email",
+    "emailRequired": "Veuillez entrer votre email",
+    "passwordLabel": "Mot de passe",
+    "passwordRequired": "Veuillez entrer votre mot de passe",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "registerButton": "S'inscrire",
+    "registerError": "Erreur d'inscription: {error}",
+    "alreadyHaveAccount": "Déjà un compte ? Se connecter",
+    "noAccountYet": "Pas encore de compte ? S'inscrire",
+    "@registerError": {
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "invalidEmail": "Veuillez entrer un email valide"
 } 

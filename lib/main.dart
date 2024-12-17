@@ -7,7 +7,6 @@ import 'package:my_event_tracker/screens/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_event_tracker/widgets/initialization.dart';
 import 'providers/config_provider.dart';
-import 'package:my_event_tracker/screens/event_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
