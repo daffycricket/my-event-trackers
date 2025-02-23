@@ -89,7 +89,9 @@
     "registerError": "Registrierungsfehler: {error}",
     "@registerError": {
         "placeholders": {
-            "error": {}
+            "error": {
+                "type": "Object"
+            }
         }
     }
 } 

@@ -5,8 +5,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_event_tracker/providers/auth_provider.dart';
 import 'package:my_event_tracker/screens/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_event_tracker/utils/logger.dart';
 import 'package:my_event_tracker/widgets/initialization.dart';
 import 'providers/config_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,9 +32,16 @@ void main() async {
   // Initialiser les formats de date
   await initializeDateFormatting();
 
+  // Récupérer l'utilisateur stocké
+  final prefs = await SharedPreferences.getInstance();
+  final storedUser = prefs.getString('stored_user');
+  AppLogger.info('storedUser: $storedUser');
+
   // Précharger les configurations
   final container = ProviderContainer();
-  //await container.read(foodReferencesProvider.future);
+  if (storedUser != null) {
+    container.read(authStateProvider.notifier).setToken(storedUser);
+  }
 
   runApp(
     UncontrolledProviderScope(

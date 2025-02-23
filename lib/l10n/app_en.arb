@@ -106,7 +106,9 @@
     "noAccountYet": "No account yet? Register",
     "@registerError": {
         "placeholders": {
-            "error": {}
+            "error": {
+                "type": "Object"
+            }
         }
     },
     "invalidEmail": "Please enter a valid email"

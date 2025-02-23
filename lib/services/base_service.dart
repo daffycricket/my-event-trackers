@@ -2,8 +2,8 @@ import 'package:logging/logging.dart';
 import 'package:my_event_tracker/utils/logger.dart';
 
 abstract class BaseService {
-  //static const String baseUrl = 'http://10.0.2.2:9095';
-  static const String baseUrl = 'http://192.168.1.63:9095';
+  static const String baseUrl = 'http://10.0.2.2:9095';
+  //static const String baseUrl = 'http://192.168.1.63:9095';
   final String _serviceName;
 
   BaseService(String name) : _serviceName = name;

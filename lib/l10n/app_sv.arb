@@ -92,7 +92,9 @@
     "registerError": "Registreringsfel: {error}",
     "@registerError": {
         "placeholders": {
-            "error": {}
+            "error": {
+                "type": "Object"
+            }
         }
     }
 } 

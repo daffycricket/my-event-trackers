@@ -108,7 +108,9 @@
     "noAccountYet": "Pas encore de compte ? S'inscrire",
     "@registerError": {
         "placeholders": {
-            "error": {}
+            "error": {
+                "type": "Object"
+            }
         }
     },
     "invalidEmail": "Veuillez entrer un email valide"
