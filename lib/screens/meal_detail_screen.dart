@@ -54,7 +54,7 @@ class MealDetailScreen extends ConsumerWidget {
               defaultQuantity: 1.0,
             ),
           );
-          AppLogger.info("Recherche de correspondance pour ${foodItem.name} : ${matchingRef != null ? 'trouvé' : 'non trouvé'}");
+          AppLogger.info("Recherche de correspondance pour ${foodItem.name} : ${matchingRef.label}");
         }
 
         return Scaffold(

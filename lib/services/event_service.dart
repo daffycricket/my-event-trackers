@@ -12,7 +12,9 @@ class EventService extends BaseService {
 
   Future<List<Event>> getEvents() async {
     try {
-      final token = _ref.read(authStateProvider);
+      final authData = await _ref.read(authServiceProvider).getStoredAuthData();
+      logInfo('AuthData retrieved: $authData');
+      final token = authData['token'];
       if (token == null) {
         throw Exception('Not authenticated');
       }
@@ -63,9 +65,15 @@ class EventService extends BaseService {
   }
 
   Future<Event> createEvent(Event event) async {
+    final authData = await _ref.read(authServiceProvider).getStoredAuthData();
+    final token = authData['token'];
+    if (token == null) {
+      throw Exception('Not authenticated');
+    }
+
     final jsonData = event.toJson();
     logInfo('Creating event at ${BaseService.baseUrl}/api/events');
-    logInfo('Request bearer token: ${_ref.read(authStateProvider)}');
+    logInfo('Request bearer token: $token');
     logInfo('Request body:');
     logInfo(json.encode(jsonData));
 
@@ -73,7 +81,7 @@ class EventService extends BaseService {
       Uri.parse('${BaseService.baseUrl}/api/events'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${_ref.read(authStateProvider)}',
+        'Authorization': 'Bearer $token',
       },
       body: json.encode(jsonData),
     );
@@ -100,7 +108,8 @@ class EventService extends BaseService {
   }
 
   Future<Event> updateEvent(int id, Event event) async {
-    final token = _ref.read(authStateProvider);
+    final authData = await _ref.read(authServiceProvider).getStoredAuthData();
+    final token = authData['token'];
     if (token == null) {
       throw Exception('Not authenticated');
     }
@@ -141,7 +150,8 @@ class EventService extends BaseService {
   }
 
   Future<void> deleteEvent(int id) async {
-    final token = _ref.read(authStateProvider);
+    final authData = await _ref.read(authServiceProvider).getStoredAuthData();
+    final token = authData['token'];
     if (token == null) {
       throw Exception('Not authenticated');
     }

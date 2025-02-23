@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:my_event_tracker/models/food_category.dart';
 import 'package:my_event_tracker/models/unit_type.dart';
 import 'dart:developer';

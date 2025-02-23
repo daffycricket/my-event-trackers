@@ -9,6 +9,7 @@ import 'package:my_event_tracker/utils/logger.dart';
 import 'package:my_event_tracker/widgets/initialization.dart';
 import 'providers/config_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_event_tracker/constants/storage_keys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,13 +35,13 @@ void main() async {
 
   // Récupérer l'utilisateur stocké
   final prefs = await SharedPreferences.getInstance();
-  final storedUser = prefs.getString('stored_user');
-  AppLogger.info('storedUser: $storedUser');
+  final storedToken = prefs.getString(StorageKeys.userToken);
+  AppLogger.info('storedToken: $storedToken');
 
   // Précharger les configurations
   final container = ProviderContainer();
-  if (storedUser != null) {
-    container.read(authStateProvider.notifier).setToken(storedUser);
+  if (storedToken != null) {
+    container.read(authStateProvider.notifier).setToken(storedToken);
   }
 
   runApp(
@@ -56,29 +57,27 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final token = ref.watch(authStateProvider);
-
     return MaterialApp(
       navigatorKey: ref.watch(navigatorKeyProvider),
-      localizationsDelegates: 
-      AppLocalizations.localizationsDelegates,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Mes événements'),
-          actions: [
-            if (token != null)
-              IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () {
-                  ref.read(authStateProvider.notifier).logout();
-                },
-              ),
-          ],
-        ),
-        body: token == null 
-            ? const LoginScreen() 
-            : const InitializationWidget(),
+      home: Consumer(
+        builder: (context, ref, _) {
+          final token = ref.watch(authStateProvider);
+          
+          if (token == null) {
+            return FutureBuilder<String?>(
+              future: ref.read(authStateProvider.notifier).getStoredEmail(),
+              builder: (context, snapshot) {
+                return LoginScreen(
+                  initialEmail: snapshot.data,
+                );
+              },
+            );
+          }
+          
+          return const InitializationWidget();
+        },
       ),
     );
   }

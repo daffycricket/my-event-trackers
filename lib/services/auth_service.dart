@@ -2,10 +2,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'base_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_event_tracker/constants/storage_keys.dart';
 
 class AuthService extends BaseService {
-  static const String userKey = 'stored_user';
-
   AuthService() : super('AuthService');
 
   Future<String> login(String email, String password) async {
@@ -40,9 +39,12 @@ class AuthService extends BaseService {
         final data = json.decode(response.body);
         final token = data['access_token'];
         
+        logInfo('Login successful - Token received: $token');
+        
         // Stocker l'email de l'utilisateur
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(userKey, email);
+        await prefs.setString(StorageKeys.userEmail, email);
+        await saveAuthData(email, token);
         
         return token;
       } else {
@@ -99,25 +101,23 @@ class AuthService extends BaseService {
     }
   }
 
-  Future<void> logout() async {
-    try {
-      // Supprimer l'utilisateur stocké
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(userKey);
-    } catch (e, stackTrace) {
-      logSevere('Logout error', e, stackTrace);
-      rethrow;
-    }
+  Future<void> saveAuthData(String email, String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(StorageKeys.userToken, token);
+    await prefs.setString(StorageKeys.userEmail, email);
   }
 
-  // Méthode pour récupérer l'utilisateur stocké
-  Future<String?> getStoredUser() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(userKey);
-    } catch (e, stackTrace) {
-      logSevere('Error getting stored user', e, stackTrace);
-      return null;
-    }
+  Future<Map<String, String?>> getStoredAuthData() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'token': prefs.getString(StorageKeys.userToken),
+      'email': prefs.getString(StorageKeys.userEmail),
+    };
+  }
+
+  Future<void> clearAuthData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(StorageKeys.userToken);
+    await prefs.remove(StorageKeys.userEmail);
   }
 } 
