@@ -33,20 +33,9 @@ void main() async {
   // Initialiser les formats de date
   await initializeDateFormatting();
 
-  // Récupérer l'utilisateur stocké
-  final prefs = await SharedPreferences.getInstance();
-  final storedToken = prefs.getString(StorageKeys.userToken);
-  AppLogger.info('storedToken: $storedToken');
-
-  // Précharger les configurations
-  final container = ProviderContainer();
-  if (storedToken != null) {
-    container.read(authStateProvider.notifier).setToken(storedToken);
-  }
-
   runApp(
     UncontrolledProviderScope(
-      container: container,
+      container: ProviderContainer(),
       child: const MyApp(),
     ),
   );
@@ -63,20 +52,23 @@ class MyApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       home: Consumer(
         builder: (context, ref, _) {
-          final token = ref.watch(authStateProvider);
-          
-          if (token == null) {
-            return FutureBuilder<String?>(
-              future: ref.read(authStateProvider.notifier).getStoredEmail(),
-              builder: (context, snapshot) {
+          return FutureBuilder<String?>(
+            future: ref.read(authStateProvider.notifier).initializeAuth(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              
+              final token = ref.watch(authStateProvider);
+              if (token == null) {
                 return LoginScreen(
                   initialEmail: snapshot.data,
                 );
-              },
-            );
-          }
-          
-          return const InitializationWidget();
+              }
+              
+              return const InitializationWidget();
+            },
+          );
         },
       ),
     );
